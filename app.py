@@ -1,50 +1,29 @@
-import numpy as np
-import pandas as pd
 import yfinance as yf
-import plotly.graph_objs as go
-import datetime as dt
-import pandas_datareader as web
+import pandas as pd
+import numpy as np
+from yahoo_fin.stock_info import get_data
+import matplotlib.pyplot as plt
+msft = yf.Ticker("TSLA") # for getting aditional data and stuff
+
+
+
+data = get_data("TSLA", start_date = None, end_date = None, index_as_date = True, interval = "1d")
+print(data["open"])
 
 
 
 
 
+# Graph
+dataframe = pd.read_excel("output.xlsx")
+x = 100
+y = 50
+plt.scatter(x, y)
+plt.show()  # or plt.savefig("name.png")
+    #exports data
+#df1 = pd.DataFrame(data)
+#df1.to_excel("output.xlsx") 
 
-data = yf.download(tickers='TSLA', period='3d', interval='1m')
-print(data)
-fig = go.Figure()
-
-
-#Candlestick
-fig.add_trace(go.Candlestick(x=data.index,
-                open=data['Open'],
-                high=data['High'],
-                low=data['Low'],
-                close=data['Close'], name = 'market data'))
-
-#Add titles
-fig.update_layout(
-    title='Uber live share price evolution',
-    yaxis_title='Stock Price (USD per Shares)')
-
-#X-Axes
-fig.update_xaxes(
-    rangeslider_visible=True,
-    rangeselector=dict(
-        buttons=list([
-            dict(count=15, label="15m", step="minute", stepmode="backward"),
-            dict(count=45, label="45m", step="minute", stepmode="backward"),
-            dict(count=1, label="HTD", step="hour", stepmode="todate"),
-            dict(count=3, label="3h", step="hour", stepmode="backward"),
-            dict(step="all")
-        ])
-    )
-)
-
-#Show
-fig.show()
-
-
-data = yf.download(tickers='TSLA', period='1d', interval='1m')
-fig = go.Figure()
+#for x in msft.info.keys():
+#    print(str(x)+":  "+ str(msft.info.get(x)))
 
