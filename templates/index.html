@@ -63,7 +63,7 @@
 
 
 
-  
+     
 
       <div class="container-fluid" id="main">
       
@@ -94,13 +94,18 @@
             
     
             <div class="col-md-9 col-lg-10 main">
-    
+                    <div>
+                    <canvas id="myChart"></canvas>
+                  </div>
+
+                  
 
                     <h1>Write code here</h1>
                     <h1>test</h1>
                     <h1 >test</h1>
                     <h1>test</h1>
                     <h1>test <i class="bi bi-123"></i></h1>
+
 
                     <hr>
 
@@ -197,85 +202,90 @@
                         </div>
                     </div>
                     <div class="col-lg-9 col-md-8">
+                        
+
+                        <thead class="thead-inverse">
+                                    
+
+                            <table class="table table-bordered table-striped mb-0">
+                                <tr>
+                                    <th>Datum</th>
+        
+                                    <th>Open</th>
+                                    <th>Low</th>
+                                    <th>High</th>
+                                    <th>AdjClose</th>
+                                    <th>Volume</th>
+                                </tr>
+                             
+                            </table>
+
+
+                        </thead>
                         <div class="table-responsive">
-                            <table class="table table-striped">
-                                <thead class="thead-inverse">
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Label</th>
-                                        <th>Header</th>
-                                        <th>Column</th>
-                                        <th>Data</th>
-                                    </tr>
-                                </thead>
+                            <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                                
+                            <table class="table table-bordered table-striped mb-0">
+                                
+
+                               
+                              
+                                
                                 <tbody>
-                                    <tr>
-                                        <td>1,001</td>
-                                        <td>responsive</td>
-                                        <td>bootstrap</td>
-                                        <td>cards</td>
-                                        <td>grid</td>
+
+
+
+                                    
+                                    <div class="overflow-auto">
+                                    {%for x in range(dioniceLen)%}
+                                    <tr> 
+                                        <td>{{datumi[x]}}</td>
+                                        {%if data["open"][x] > data["open"][x-1]%}
+                                        <td style="color: rgb(77, 228, 77);">{{data["open"][x]}}$</td>
+                                        {%else%}
+                                        <td style="color: rgb(255, 50, 50);">{{data["open"][x]}}$</td>
+                                        {%endif%}
+
+                                        {%if data["low"][x] > data["low"][x-1]%}
+                                        <td style="color: rgb(77, 228, 77);">{{data["low"][x]}}$</td>
+                                        {%else%}
+                                        <td style="color: rgb(255, 50, 50);">{{data["low"][x]}}$</td>
+                                        {%endif%}
+                                        
+
+                                        {%if data["high"][x] > data["high"][x-1]%}
+                                        <td style="color: rgb(77, 228, 77);">{{data["high"][x]}}$</td>
+                                        {%else%}
+                                        <td style="color: rgb(255, 50, 50);">{{data["high"][x]}}$</td>
+                                        {%endif%}
+                                        
+
+                                        {%if data["adjclose"][x] > data["adjclose"][x-1]%}
+                                        <td style="color: rgb(77, 228, 77);">{{data["adjclose"][x]}}$</td>
+                                        {%else%}
+                                        <td style="color: rgb(255, 50, 50);">{{data["adjclose"][x]}}$</td>
+                                        {%endif%}
+
+                                        {%if data["volume"][x] > data["volume"][x-1]%}
+                                        <td style="color: rgb(77, 228, 77);">{{data["volume"][x]}}$</td>
+                                        {%else%}
+                                        <td style="color: rgb(255, 50, 50);">{{data["volume"][x]}}$</td>
+                                        {%endif%}
+                                        
+                                        
+                                 
+                    
                                     </tr>
-                                    <tr>
-                                        <td>1,002</td>
-                                        <td>rwd</td>
-                                        <td>web designers</td>
-                                        <td>theme</td>
-                                        <td>responsive</td>
-                                    </tr>
-                                    <tr>
-                                        <td>1,003</td>
-                                        <td>free</td>
-                                        <td>open-source</td>
-                                        <td>download</td>
-                                        <td>template</td>
-                                    </tr>
-                                    <tr>
-                                        <td>1,003</td>
-                                        <td>frontend</td>
-                                        <td>developer</td>
-                                        <td>coding</td>
-                                        <td>card panel</td>
-                                    </tr>
-                                    <tr>
-                                        <td>1,004</td>
-                                        <td>migration</td>
-                                        <td>bootstrap 4</td>
-                                        <td>mobile-first</td>
-                                        <td>design</td>
-                                    </tr>
-                                    <tr>
-                                        <td>1,005</td>
-                                        <td>navbar</td>
-                                        <td>sticky</td>
-                                        <td>jumbtron</td>
-                                        <td>header</td>
-                                    </tr>
-                                    <tr>
-                                        <td>1,006</td>
-                                        <td>collapse</td>
-                                        <td>affix</td>
-                                        <td>submenu</td>
-                                        <td>flexbox</td>
-                                    </tr>
-                                    <tr>
-                                        <td>1,007</td>
-                                        <td>layout</td>
-                                        <td>examples</td>
-                                        <td>themes</td>
-                                        <td>grid</td>
-                                    </tr>
-                                    <tr>
-                                        <td>1,008</td>
-                                        <td>migration</td>
-                                        <td>bootstrap 4</td>
-                                        <td>flexbox</td>
-                                        <td>design</td>
-                                    </tr>
+                                    {%endfor%}
+                                </div>
                                 </tbody>
+                            
                             </table>
                         </div>
                     </div>
+                        </div>
+                    </div>
+                    
                 </div>
                 <!--/row-->
     
@@ -562,3 +572,50 @@
     <script src="js/bootstrap.js"></script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+<div>
+    <canvas id="myChart"></canvas>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+  <script>
+    const ctx = document.getElementById('myChart');
+  
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: [
+        {% for x in range(0, datumiLen) %}
+      '{{datumi[x]}}',
+      {% endfor %}
+        ],
+        datasets: [{
+          label: ' in dolars $',
+          data: [
+          {%for x in range(dioniceLen)%}
+      '{{dionice[x]}}',
+      {% endfor %}
+          ],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    });
+
+
+</script>
