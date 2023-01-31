@@ -8,22 +8,16 @@ from flask import Flask, render_template, request,redirect
 
 
 
-msft = yf.Ticker("TSLA") # for getting aditional data and stuff
-data = get_data("TSLA", start_date = '01/01/2023', end_date = None, interval = "1d")
-
-print(data)
+def findData(tiker="TSLA",startDate='01/01/2021',Interval="1wk"):
+    try:
+        data = get_data(tiker, start_date = startDate, end_date = None, interval = Interval)
+    except:
+        
+        return "Error"
+    return data
 
 datumi =[]
 dionice = []
-
-for y in data["open"]:
-    dionice.append(int(y))
-
-
-for x in data["open"].index.values:
-    datumi.append(str(x)[:-19])
-
-
 
 app = Flask(__name__)
 
@@ -31,10 +25,44 @@ app = Flask(__name__)
 @app.route('/',methods = ['GET','POST'])
 def main ():
 
+        #default set to TSLA
+    data = findData()
+    tiker="TSLA"
 
 
+        # on post
+    if request.method == "POST":
+            # if post is search
+        if 'search' in request.form:
 
-    return render_template ('index.html',datumi=datumi, datumiLen=len(datumi),dionice=dionice,dioniceLen=len(dionice),data=data)
+
+                # change data with user input
+            search = request.form['search']
+            tiker= str(search)
+
+            data= findData(str(search))
+            
+            try:
+                data= findData(str(search))
+                if data == "Error":
+                    tiker ="Cant find that."
+                print("Cant find that")
+                data = findData()
+            except:
+                
+                print("correct")
+
+                
+
+        #for editing data 
+    for y in data["open"]:
+        dionice.append(int(y))
+
+    for x in data["open"].index.values:
+        datumi.append(str(x)[:-19])
+            
+    
+    return render_template ('index.html',datumi=datumi, datumiLen=len(datumi),dionice=dionice,dioniceLen=len(dionice),data=data,tiker = tiker)
 
 
 
