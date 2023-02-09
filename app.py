@@ -55,7 +55,7 @@ def plot_regression_line(x, y, b):
     # function to show plot
     plt.show()
 
-def findData(tiker="TSLA",startDate='01/01/2023',Interval="1d"):
+def findData(tiker="TSLA",startDate='01/01/2018',Interval="1d"):
     try:
         data = get_data(tiker, start_date = startDate, end_date = None, interval = Interval)
     except:
@@ -66,7 +66,30 @@ def findData(tiker="TSLA",startDate='01/01/2023',Interval="1d"):
 
 
 
+def LinearRegression():
+    
+    int_list = data["open"]
 
+    # Date List
+    date_list = datumi
+    date_list = [datetime.strptime(date, '%Y-%m-%d') for date in date_list]
+
+    # Create a DataFrame with the int and date lists
+    df = pd.DataFrame({'int': int_list, 'date': date_list})
+    df['date'] = (df['date'] - df['date'].min())  / np.timedelta64(1,'D')
+
+    # Create a Linear Regression Model
+    model = LinearRegression()
+    model.fit(df[['date']], df['int'])
+    #print(df["date"])
+    print(model.predict(df[['date']]))
+
+    # Plot the linear regression graph
+    plt.scatter(df['date'], df['int'], color='red')
+    plt.plot(df['date'], model.predict(df[['date']]), color='blue')
+    plt.xlabel('Date')
+    plt.ylabel('Int')
+    plt.show()
 
 
 
@@ -78,6 +101,9 @@ def main ():
     dionice = []
     data = findData()
     tiker="TSLA"
+
+    
+
     
 
 
@@ -119,9 +145,7 @@ def main ():
     data["high"] = list(np.around(np.array(data["open"]),2))
     data["adjclose"] = list(np.around(np.array(data["open"]),2))
     data["volume"] = list(np.around(np.array(data["open"]),2))
-    print("datum---------------------------->"+ str(len(datumi)))
-    print("value---------------------------->"+ str(data["open"]))
-    print("value---------------------------->"+ str(datumi))
+ 
     #plot_regression_line(dionice,datumi, b)
     return render_template ('index.html',datumi=datumi, datumiLen=len(datumi),dionice=dionice,dioniceLen=len(dionice),data=data,tiker = tiker)
 
