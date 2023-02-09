@@ -82,7 +82,8 @@
                 <H1 style="margin-top: 50px; text-align: center;">{{tiker}}</H1>
                     <div>
                          {%if tiker != "Cant find that."%}
-                    <canvas style="" id="myChart"></canvas>
+                    <canvas style="width: 100px;"  id="myChart"></canvas>
+                
                     {%endif%}
                   </div>
 
@@ -198,7 +199,7 @@
                                     
 
                             <table class="table table-bordered table-striped mb-0">
-                                <tr>
+                                <tr style="text-align: center;">
                                     <th>Datum</th>
         
                                     <th>Open</th>
@@ -226,15 +227,15 @@
 
                                  
                                     
-                                    <div class="overflow-auto">
+                                    <div  class="overflow-auto">
                                     {%if tiker != "Cant find that."%}
                                         
                                         
-                                    {%for x in range(20)%}
-                                    <tr> 
+                                    {%for x in range(datumiLen-1)%}
+                                    <tr style="text-align: center;"> 
                                         <td>{{datumi[x]}}</td>
                                         {%if data["open"][x] > data["open"][x-1]%}
-                                        <td style="color: rgb(77, 228, 77);">{{data["open"][x]}}$ <i class="bi bi-arrow-up-short"></i></td>
+                                        <td style="color: rgb(77, 228, 77);">{{ data["open"][x] }}$ <i class="bi bi-arrow-up-short"></i></td>
                                         {%else%}
                                         <td style="color: rgb(255, 50, 50);">{{data["open"][x]}}$ <i class="bi bi-arrow-down-short"></i></td>
                                         {%endif%}
@@ -260,9 +261,9 @@
                                         {%endif%}
 
                                         {%if data["volume"][x] > data["volume"][x-1]%}
-                                        <td style="color: rgb(77, 228, 77);">{{data["volume"][x]}}$ <i class="bi bi-arrow-up-short"></i></td>
+                                        <td style="color: rgb(77, 228, 77);">{{data["volume"][x]}} <i class="bi bi-arrow-up-short"></i></td>
                                         {%else%}
-                                        <td style="color: rgb(255, 50, 50);">{{data["volume"][x]}}$ <i class="bi bi-arrow-down-short"></i></td>
+                                        <td style="color: rgb(255, 50, 50);">{{data["volume"][x]}} <i class="bi bi-arrow-down-short"></i></td>
                                         {%endif%}
                                         
                                         
@@ -313,24 +314,48 @@
   <script>
     const ctx = document.getElementById('myChart');
   
-    new Chart(ctx, {
+ 
+
+
+    new Chart(ctx, 
+    {
       type: 'line',
       data: {
-        labels: [
+        labels: [ 
+            
         {% for x in range(datumiLen) %}
-      '{{datumi[x]}}',
-      {% endfor %}
-        ],
-        datasets: [{
-          label: ' in dolars $',
-          data: [
-          {%for x in range(dioniceLen)%}
-      '{{dionice[x]}}',
-      {% endfor %}
-          ],
-          borderWidth: 1
-        }]
+            '{{datumi[x]}}',
+        {% endfor %}
+  ],
+  datasets: [{
+    type: 'line',
+    label: 'Bar Dataset',
+    data: [
+    {%for x in range(dioniceLen)%}
+        
+        '{{dionice[x]}}',
+    
+    {% endfor %}
+    ],
+    borderColor: 'rgb(255, 99, 132)',
+    backgroundColor: 'rgba(255, 99, 132, 0.2)'
+  }, {
+
+
+    type: 'line',
+    label: 'Line Dataset',
+    data: [
+    {%for x in range(dioniceLen)%}
+        
+        '{{dionice[x]-10}}',
+    
+    {% endfor %}
+    ],
+    fill: false,
+    borderColor: 'rgb(54, 162, 235)'
+  }]
       },
+
       options: {
         scales: {
           y: {
@@ -339,8 +364,6 @@
         }
       }
     });
-
-
 
 
 </script>
