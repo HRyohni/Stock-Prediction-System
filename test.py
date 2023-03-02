@@ -101,3 +101,5 @@ plt.xlabel('Date')
 plt.ylabel('Price')
 plt.title('Linear Regression of Prices vs. Date')
 plt.show()
+
+print(findData())

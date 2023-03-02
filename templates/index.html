@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.min.js" integrity="sha384-Atwg2Pkwv9vp0ygtn1JAojH0nYbwNJLPhwyoVbhoPwBhjQPR5VtM2+xf0Uwh9KtT" crossorigin="anonymous"></script>	
-    <title>Document</title>
+    <title>Stocks</title>
 </head>
 <body >
 
@@ -44,7 +44,8 @@
                 </ul>
               </li>
 
-
+             
+              <h1 style="text-align: center;">Price</h1>
 
       
             </ul>
@@ -328,6 +329,7 @@
         {% endfor %}
   ],
   datasets: [{
+    
     type: 'line',
     label: 'Bar Dataset',
     data: [
@@ -343,11 +345,13 @@
 
 
     type: 'line',
-    label: 'Line Dataset',
+    lineTension: 3,
+    label: 'Linear Agression',
     data: [
-    {%for x in range(dioniceLen)%}
+    {%for i in range(linearLen)%}
         
-        '{{dionice[x]-10}}',
+        '{{x[i]}}',
+        
     
     {% endfor %}
     ],

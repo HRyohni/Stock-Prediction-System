@@ -5,6 +5,7 @@ import numpy as np
 from yahoo_fin.stock_info import get_data
 import matplotlib.pyplot as plt
 from flask import Flask, render_template, request,redirect
+from sklearn.linear_model import LinearRegression
 
 
 app = Flask(__name__)
@@ -19,43 +20,8 @@ app = Flask(__name__)
 #print("The pearson's coeffient of the x and y inputs are: \n" ,pearsons_coefficient)
 
 
-def estimate_coef(x, y):
-    # number of observations/points
-    n = np.size(x)
-  
-    # mean of x and y vector
-    m_x = np.mean(x)
-    m_y = np.mean(y)
-  
-    # calculating cross-deviation and deviation about x
-    SS_xy = np.sum(y*x) - n*m_y*m_x
-    SS_xx = np.sum(x*x) - n*m_x*m_x
-  
-    # calculating regression coefficients
-    b_1 = SS_xy / SS_xx
-    b_0 = m_y - b_1*m_x
-  
-    return (b_0, b_1)
-  
-def plot_regression_line(x, y, b):
-    # plotting the actual points as scatter plot
-    plt.scatter(x, y, color = "m",
-               marker = "o", s = 30)
-  
-    # predicted response vector
-    y_pred = b[0] + b[1]*x
-  
-    # plotting the regression line
-    plt.plot(x, y_pred, color = "g")
-  
-    # putting labels
-    plt.xlabel('value') #x
-    plt.ylabel('datum') #y
-  
-    # function to show plot
-    plt.show()
 
-def findData(tiker="TSLA",startDate='01/01/2018',Interval="1d"):
+def findData(tiker="TSLA",startDate='01/01/22',Interval="1d"):
     try:
         data = get_data(tiker, start_date = startDate, end_date = None, interval = Interval)
     except:
@@ -66,7 +32,11 @@ def findData(tiker="TSLA",startDate='01/01/2018',Interval="1d"):
 
 
 
-def LinearRegression():
+def LinearnaAgregacija(data):
+
+    datumi = []
+    for x in data["open"].index.values:
+        datumi.append(str(x)[:-19])
     
     int_list = data["open"]
 
@@ -81,15 +51,7 @@ def LinearRegression():
     # Create a Linear Regression Model
     model = LinearRegression()
     model.fit(df[['date']], df['int'])
-    #print(df["date"])
-    print(model.predict(df[['date']]))
-
-    # Plot the linear regression graph
-    plt.scatter(df['date'], df['int'], color='red')
-    plt.plot(df['date'], model.predict(df[['date']]), color='blue')
-    plt.xlabel('Date')
-    plt.ylabel('Int')
-    plt.show()
+    return model.predict(df[['date']]) , df['int']
 
 
 
@@ -145,9 +107,14 @@ def main ():
     data["high"] = list(np.around(np.array(data["open"]),2))
     data["adjclose"] = list(np.around(np.array(data["open"]),2))
     data["volume"] = list(np.around(np.array(data["open"]),2))
+
+    # getting linear agression
+    x,y = LinearnaAgregacija(findData())
+    print(x[20])
+
  
     #plot_regression_line(dionice,datumi, b)
-    return render_template ('index.html',datumi=datumi, datumiLen=len(datumi),dionice=dionice,dioniceLen=len(dionice),data=data,tiker = tiker)
+    return render_template ('index.html',datumi=datumi, datumiLen=len(datumi),dionice=dionice,dioniceLen=len(dionice),data=data,tiker = tiker,x=x,y=y,linearLen=len(x))
 
 
 
