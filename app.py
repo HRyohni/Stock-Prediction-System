@@ -64,11 +64,6 @@ def main ():
     data = findData()
     tiker="TSLA"
 
-    
-
-    
-
-
         # on post
     if request.method == "POST":
             # if post is search
@@ -114,7 +109,22 @@ def main ():
 
  
     #plot_regression_line(dionice,datumi, b)
-    return render_template ('index.html',datumi=datumi, datumiLen=len(datumi),dionice=dionice,dioniceLen=len(dionice),data=data,tiker = tiker,x=x,y=y,linearLen=len(x))
+    return render_template ('index.html',datumi=datumi, datumiLen=len(datumi),dionice=dionice,dioniceLen=len(dionice),data=data,imedionice = tiker,x=x,y=y,linearLen=len(x))
+
+
+
+
+
+
+
+@app.route('/test',methods = ['GET','POST'])
+def test ():
+
+
+ 
+    #plot_regression_line(dionice,datumi, b)
+    return str(45*3)
+
 
 
 
