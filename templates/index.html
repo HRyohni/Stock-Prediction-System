@@ -109,7 +109,7 @@
                 <h1 class="display-4 d-none d-sm-block">
                 Stocks Analytics
                 </h1>
-                <p class="lead d-none d-sm-block">(with off-canvas sidebar, based on BS v4.0.0)</p>
+                <p class="lead d-none d-sm-block">Most Reacent {{datumi[-1]}}</p>
     
                 <div class="alert alert-warning fade collapse" role="alert" id="myAlert">
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -125,8 +125,8 @@
                                 <div class="rotate">
                                     <i class="fa fa-user fa-3x"></i>
                                 </div>
-                                <h6 class="text-uppercase">Stocks</h6>
-                                <h1 class="display-4"><h1 style="color: rgb(172, 27, 27);">  13%    <i class="bi bi-arrow-down"></i></h1>
+                                <h6 class="text-uppercase">Open</h6>
+                                <h1 class="display-4"><h1> {{data["open"][-1]}} </h1> </h1>
                             </div>
                         </div>
                     </div>
@@ -136,8 +136,8 @@
                                 <div class="rotate">
                                     <i class="fa fa-list fa-3x"></i>
                                 </div>
-                                <h6 class="text-uppercase">Posts</h6>
-                                <h1 class="display-4">87</h1>
+                                <h6 class="text-uppercase">Low</h6>
+                                <h1 class="display-4"><h1>{{data["low"][-1]}}</h1></h1>
                             </div>
                         </div>
                     </div>
@@ -147,8 +147,8 @@
                                 <div class="rotate">
                                     <i class="fa fa-twitter fa-3x"></i>
                                 </div>
-                                <h6 class="text-uppercase">Tweets</h6>
-                                <h1 class="display-4">125</h1>
+                                <h6 class="text-uppercase">High</h6>
+                                <h1 class="display-4"><h1>{{data["high"][-1]}}</h1></h1>
                             </div>
                         </div>
                     </div>
@@ -158,8 +158,8 @@
                                 <div class="rotate">
                                     <i class="fa fa-share fa-3x"></i>
                                 </div>
-                                <h6 class="text-uppercase">Shares</h6>
-                                <h1 class="display-4">36</h1>
+                                <h6 class="text-uppercase">Volume</h6>
+                                <h1 class="display-4"><h1>{{data["volume"][-1]}}</h1></h1>
                             </div>
                         </div>
                     </div>
@@ -278,9 +278,31 @@
                                 </tbody>
                             
                             </table>
+                            
                         </div>
+                      
                     </div>
+                  
                         </div>
+                        <form method="POST" style="width: 500px;">
+
+                            <div class="mb-3" >
+                              <label for="exampleInputEmail1" class="form-label">Primary Stock</label>
+                              <input  placeholder="name of comeprison Tiker" name="primary" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" required>
+                              
+                            </div>
+                            <div class="mb-3">
+                                <label for="exampleInputEmail1" class="form-label">Scondary Stock</label>
+                                <input placeholder="name of comeprison Tiker" name="secondary" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" required>
+                                
+                              </div>
+                            <p style="color: rgb(221, 55, 55);">{{errormsg}}</p>
+                           
+                            <button type="submit" class="btn btn-primary">Compare</button>
+                          </form>
+                          {% if errormsg != "error occured"%}
+                        <canvas style="width: 100px;"  id="compare"></canvas>
+                        {%endif%}
                     </div>
                     
                 </div>
@@ -314,9 +336,6 @@
   
   <script>
     const ctx = document.getElementById('myChart');
-  
- 
-
 
     new Chart(ctx, 
     {
@@ -345,7 +364,7 @@
 
 
     type: 'line',
-    lineTension: 3,
+   
     label: 'Linear Agression',
     data: [
     {%for i in range(linearLen)%}
@@ -369,5 +388,59 @@
       }
     });
 
+
+
+const ctx1 = document.getElementById('compare');
+
+new Chart(ctx1, 
+{
+  type: 'line',
+  data: {
+    labels: [ 
+        
+    {% for x in range(datumiLen) %}
+        '{{datumi[x]}}',
+    {% endfor %}
+],
+datasets: [{
+
+type: 'line',
+label: '{{tiker1}}',
+data: [
+{%for x in range(dioniceLen)%}
+    
+    '{{dionice1[x]}}',
+
+{% endfor %}
+],
+borderColor: 'rgb(255, 99, 132)',
+backgroundColor: 'rgba(255, 99, 132, 0.2)'
+}, {
+
+
+type: 'line',
+
+label: '{{tiker2}}',
+data: [
+{%for i in range(dioniceLen)%}
+    
+'{{dionice2[i]}}',
+    
+
+{% endfor %}
+],
+fill: false,
+borderColor: 'rgb(54, 162, 235)'
+}]
+  },
+
+  options: {
+    scales: {
+      y: {
+        beginAtZero: true
+      }
+    }
+  }
+});
 
 </script>

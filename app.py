@@ -11,26 +11,24 @@ from sklearn.linear_model import LinearRegression
 app = Flask(__name__)
 
 
-        # collerraction
-#x = [11, 2, 7, 4, 15, 6, 10, 8, 9, 1, 11, 5, 13, 6, 15]
-#y = [2, 5, 17, 6, 10, 8, 13, 4, 6, 9, 11, 2, 5, 4, 7]
-
-# to return the upper three quartiles
-#pearsons_coefficient = np.corrcoef(x, y)
-#print("The pearson's coeffient of the x and y inputs are: \n" ,pearsons_coefficient)
-
-
-
 def findData(tiker="TSLA",startDate='01/01/22',Interval="1d"):
     try:
-        data = get_data(tiker, start_date = startDate, end_date = None, interval = Interval)
+        data = get_data(tiker, start_date = startDate, end_date = "03/03/23", interval = "1wk")
+        print(data)
+            
     except:
         
         return "Error"
     return data
 
 
-
+def roundNummber(data):
+        # round nummbers for better view
+    data["open"] = list(np.around(np.array(data["open"]),2))
+    data["low"] = list(np.around(np.array(data["low"]),2))
+    data["high"] = list(np.around(np.array(data["high"]),2))
+    data["adjclose"] = list(np.around(np.array(data["adjclose"]),2))
+    return data
 
 def LinearnaAgregacija(data):
 
@@ -58,65 +56,102 @@ def LinearnaAgregacija(data):
 @app.route('/',methods = ['GET','POST'])
 def main ():
 
-        #default set to TSLA
+        #default variables
     datumi =[]
     dionice = []
-    data = findData()
-    tiker="TSLA"
+
+    # comppersion arrays
+    dionice1 = []
+    dionice2 = []
+    tiker = "BRK-B"
+    data = findData(tiker)
+
+    # compersion tikers
+    tiker1 = "TSLA"
+    prvaDionica = findData(tiker1)
+
+    tiker2 = "BRK-B"            
+    drugaDionica = findData(tiker2)
+
+    errormsg = ""
 
         # on post
     if request.method == "POST":
             # if post is search
         if 'search' in request.form:
 
-
                 # change data with user input
             search = request.form['search']
-            tiker= str(search)
+            tiker= str(search.upper())
 
+                # get get data based on user input
             data= findData(str(search))
-            
+
+                # if search cant be found
             try:
                 data= findData(str(search))
                 if data == "Error":
                     tiker ="Cant find that."
                 print("Cant find that")
+                # setting up tiker to default to prevent any kind of errors
                 data = findData()
             except:
-                
                 print("correct")
 
+        if 'primary' in request.form and 'secondary' in request.form :
+            # getting first tiker from user input
+            tiker1 = request.form['primary'].upper()
+            prvaDionica = findData(tiker1)
+            # getting second tiker from user input
+            tiker2 = request.form['secondary'].upper()
+            drugaDionica = findData(tiker2)
+        
+
                 
 
-        #for editing data 
+        #creating better format with data 
+            #importing open tiker -> dionice
     for y in data["open"]:
-        dionice.append(int(y))
+        try:
+            dionice.append(int(y))
+        except:
+            break
+        
 
-
+            #importing date -> datumi
     for x in data["open"].index.values:
         datumi.append(str(x)[:-19])
         
-    test = findData()    
-    data["open"] = list(np.around(np.array(data["open"]),2))
-    data["low"] = list(np.around(np.array(data["open"]),2))
-    data["high"] = list(np.around(np.array(data["open"]),2))
-    data["adjclose"] = list(np.around(np.array(data["open"]),2))
-    data["volume"] = list(np.around(np.array(data["open"]),2))
+        # importing first Tiker for comperison
+    try:
+        for y in prvaDionica["open"]:
+            dionice1.append(int(y))
 
+            # importing second Tiker for comperison
+
+        for y in drugaDionica["open"]:
+            dionice2.append(int(y))
+    except:
+        errormsg = "error occured"
+        
+
+   
     # getting linear agression
-    x,y = LinearnaAgregacija(findData())
-    print(x[20])
-
+    x,y = LinearnaAgregacija(data)
+    
+    # round nummbers for better view
+    roundNummber(data)
+        
  
     #plot_regression_line(dionice,datumi, b)
-    return render_template ('index.html',datumi=datumi, datumiLen=len(datumi),dionice=dionice,dioniceLen=len(dionice),data=data,imedionice = tiker,x=x,y=y,linearLen=len(x))
+    return render_template ('index.html',datumi=datumi, datumiLen = len(datumi),dionice=dionice,dioniceLen=len(dionice),data=data,imedionice = tiker,x=x,y=y,linearLen=len(x),dionice2=dionice2, tiker2= tiker2, tiker1 = tiker1, errormsg = errormsg ,dionice1 = dionice1)
 
 
 
 
 
 
-
+    # basic Flask tamplate for testing
 @app.route('/test',methods = ['GET','POST'])
 def test ():
 
@@ -128,38 +163,6 @@ def test ():
 
 
 
-
+    # just keep it like this
 if __name__ == "__main__":
     app.run(debug = True)
-
-##print(type(data))
-#dionica = []
-#datum = []
-
-#print (str(data.index.values[0])[: -19]) # getting good date format
-#for x in range(len(data)):
-#    datum.append ("Datum: "+str(data.index.values[x])[: -19])
-#    dionica.append("Dionica: "+ str(data["open"][x]))
-
-#plt.plot(dionica,datum)
-
-#datetime = datetime.strptime(str(data.index.values[0]), '%Y-%m-%d')
-#print(datetime)
-
-
-#print(data)
-
-
-#plt.show()
-
-
-# Graph
-#dataframe = pd.read_excel("output.xlsx")
- # or plt.savefig("name.png")
-    #exports data
-#df1 = pd.DataFrame(data)
-#df1.to_excel("output.xlsx") 
-
-#for x in msft.info.keys():
-#    print(str(x)+":  "+ str(msft.info.get(x)))
-
