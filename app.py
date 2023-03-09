@@ -6,20 +6,23 @@ from yahoo_fin.stock_info import get_data
 import matplotlib.pyplot as plt
 from flask import Flask, render_template, request,redirect
 from sklearn.linear_model import LinearRegression
-
+from sklearn.linear_model import LogisticRegression
 
 app = Flask(__name__)
 
 
-def findData(tiker="TSLA",startDate='01/01/22',Interval="1d"):
+def findData(tiker="TSLA",startDate='01/01/20',Interval= "1wk"):
     try:
-        data = get_data(tiker, start_date = startDate, end_date = "03/03/23", interval = "1wk")
-        print(data)
-            
+        data = get_data(tiker, start_date = startDate, end_date = "03/03/23", interval = Interval)
+  
     except:
         
         return "Error"
     return data
+
+
+
+
 
 
 def roundNummber(data):
@@ -41,7 +44,7 @@ def LinearnaAgregacija(data):
     # Date List
     date_list = datumi
     date_list = [datetime.strptime(date, '%Y-%m-%d') for date in date_list]
-
+   
     # Create a DataFrame with the int and date lists
     df = pd.DataFrame({'int': int_list, 'date': date_list})
     df['date'] = (df['date'] - df['date'].min())  / np.timedelta64(1,'D')
@@ -52,9 +55,51 @@ def LinearnaAgregacija(data):
     return model.predict(df[['date']]) , df['int']
 
 
+def logistic_regression(x, y):          # test
+    # Convert the date values to numeric values
+    y = pd.to_datetime(y)
+    y = pd.to_numeric(y)
+
+    # Create a logistic regression model
+    model = LogisticRegression()
+
+    # Fit the model to the data
+    model.fit(np.array(x).reshape(-1, 1), y)
+
+    # Get the coefficients of the model
+    coef = model.coef_[0][0]
+    intercept = model.intercept_[0]
+
+
+    # plot
+
+    return coef, intercept
+
+def logistic_reg ():
+    x = np.arange(10).reshape(-1, 1)
+    y = np.array([0, 0, 0, 0, 1, 1, 1, 1, 1, 1])
+
+    model = LogisticRegression(solver='liblinear', random_state=0)
+
+    model.fit(x, y)
+
+
+    LogisticRegression(C=1.0, class_weight=None, dual=False, fit_intercept=True,
+                   intercept_scaling=1, l1_ratio=None, max_iter=100,
+                   multi_class='warn', n_jobs=None, penalty='l2',
+                   random_state=0, solver='liblinear', tol=0.0001, verbose=0,
+                   warm_start=False)
+
+    model = LogisticRegression(solver='liblinear', random_state=0).fit(x, y)
+    model.predict_proba(x)
+
+    model.predict(x)
+    model.score(x, y)
+    print(classification_report(y, model.predict(x)))
 
 @app.route('/',methods = ['GET','POST'])
 def main ():
+    logistic_reg ()
 
         #default variables
     datumi =[]
@@ -134,15 +179,28 @@ def main ():
     except:
         errormsg = "error occured"
         
-
+        # correlation done
+    print(np.corrcoef(dionice1,dionice2))
    
     # getting linear agression
     x,y = LinearnaAgregacija(data)
     
     # round nummbers for better view
     roundNummber(data)
+
+    x = [1, 2, 3, 4, 5]
+    y = ['2022-01-01', '2022-01-02', '2022-01-03', '2022-01-04', '2022-01-05']
+
+    #coef, intercept = logistic_regression(dionice,datumi)
+
+    #print("Coefficients: ", coef)
+    #print("Intercept: ", intercept)
         
  
+    print(findData())
+    print(datumi)
+    print(findData()["open"])
+
     #plot_regression_line(dionice,datumi, b)
     return render_template ('index.html',datumi=datumi, datumiLen = len(datumi),dionice=dionice,dioniceLen=len(dionice),data=data,imedionice = tiker,x=x,y=y,linearLen=len(x),dionice2=dionice2, tiker2= tiker2, tiker1 = tiker1, errormsg = errormsg ,dionice1 = dionice1)
 
