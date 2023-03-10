@@ -16,7 +16,7 @@ from flask import Flask, render_template, request,redirect
 
 # pozivi iz scikit learn biblioteke || unsupervised machine learning || pip install scikit-learn
 from sklearn.linear_model import LinearRegression
-from sklearn.preprocessing import Normalizer
+from sklearn.preprocessing import StandardScaler
 from sklearn.pipeline import make_pipeline
 from sklearn.cluster import KMeans
 
@@ -70,7 +70,46 @@ def LinearnaAgregacija(data):
     model.fit(df[['date']], df['int'])
     return model.predict(df[['date']]) , df['int']
 
+# ova funkcija se koristi za prikaz kmeans algoritma te koristi statičke podatke od DOW30 indeksa
+# ako bude trebalo možemo ju adaptirati za druge potrebe
+# pošto sam radio u notebooku nije testiran za ovo ali sam razne sektore bloka odvojio kako sam paste-o [prvo blok pa onda komentar šta radi]
+def kmeans():
+    data = []
+    tiker = si.tickers_dow()
+    start = '2022-01-01'
+    end = '2023-01-01'
 
+    for tik in tiker:
+        nešto = si.get_data(tik, start_date=start, end_date=end, interval='1wk')
+        data.append(nešto)
+
+    data_all = pd.concat(data, axis=0)
+    data_all = data_all.reindex(columns = ['ticker', 'open', 'high', 'low', 'close', 'adjclose', 'volume'])
+    data_all = data_all.dropna()
+    print(data_all)
+    # ovaj blok koristim za spremanje podataka u jedan DataFrame pošto uzimamo više podataka za neke tickere tj. uzimamo tickere od DOW30 indeksa te podatke u intervalima od tjedan dana concatamo u jedan dataframe i mjenjamo redoslijed kolona za lakšu preglednost (nisam skužio kako imenovati kolone datuma)
+    # -----------------------------------------------------
+
+    dfs = data_all[['open', 'high', 'low', 'close', 'volume']]
+    data_scaled = StandardScaler().fit_transform(dfs)
+    print(data_scaled)
+    # ovaj blok priprema podatke kako bi sa StandardScaler() metodom
+    # -----------------------------------------------------
+
+    rez_km = KMeans(n_clusters=3, n_init=10).fit(data_scaled)
+    klasteri = rez_km.labels_
+    centroidi = rez_km.cluster_centers_
+
+    rezultat_sve = pd.DataFrame({'ticker': data_all['ticker'], 'cluster': klasteri})
+
+    print("Korišteni centroidi:")
+    print(centroidi)
+
+
+    print("Rezultati KMeans klasteriranja:")
+    print(rezultat_sve)
+    # ovaj blok se koristi za pozivanje kmeans funkcije i ispisivanje rezultata
+    # -----------------------------------------------------
 
 @app.route('/',methods = ['GET','POST'])
 def main ():
