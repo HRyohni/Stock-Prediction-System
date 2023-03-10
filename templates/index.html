@@ -304,17 +304,103 @@
                         <canvas style="width: 100px;"  id="compare"></canvas>
                         {%endif%}
 
-                        <h1 style="text-align: centers;">Correlation</h1>
+                        <h1 style="text-align: centers;">Time series regression</h1>
+
+
+
+
                         <div class="container text-center">
                           <div class="row">
                             <div class="col">
-                              Corelation
+                              <div>Model:</div>
+                              <div>Date:</div>
+                              <div>Time:</div>
+                              <div>Sample:</div>
+                              
                             </div>
                             <div class="col">
-                              Column
+                              <div>Model:</div>
+                              <div>Date:</div>
+                              <div>Time:</div>
+                              <div>Sample:</div>
+                              
                             </div>
                             <div class="col">
-                              Column
+                             <div>No. Observations:</div> 
+                             <div>Log Likelihood</div> 
+                             <div>AIC</div> 
+                             <div>BIC</div> 
+                             <div>HQIC</div> 
+                              
+                              
+                            </div>
+                            <div class="col">
+                              <div>Model:</div>
+                              <div>Date:</div>
+                              <div>Time:</div>
+                              <div>Sample:</div>
+                              
+                            </div>
+                          </div>
+                          <hr>
+                          <div class="row">
+                            <div class="col">
+                              <div></div>
+                              <div>ar.L1</div>
+                              <div>ma.L1</div>
+                              <div>Sigma2</div>
+                              
+                            </div>
+                            <div class="col">
+                              <div>coef:</div>
+                              <div>x</div>
+                              <div>x</div>
+                              <div>x</div>
+                              
+                            </div>
+                            <div class="col">
+                             <div>std err</div> 
+                             <div>x</div> 
+                             <div>x</div> 
+                             <div>x</div> 
+                             <div>x</div> 
+                              
+                              
+                            </div>
+                            <div class="col">
+                              <div>z</div>
+                              <div>x</div>
+                              <div>x</div>
+                              <div>x</div>
+                              
+                            </div>
+                            <div class="col">
+                              <div> P>|z|</div>
+                              <div>x</div>
+                              <div>x</div>
+                              <div>x</div>
+                              
+                            </div>
+                            <div class="col">
+                              <div>[data  </div>
+                              <div>x</div>
+                              <div>x</div>
+                              <div>x</div>
+                              
+                            </div>
+                            <div class="col">
+                              <div>  data]</div>
+                              <div>x</div>
+                              <div>x</div>
+                              <div>x</div>
+                              
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col">
+                              <div>
+
+                              </div>
                             </div>
                           </div>
                         </div>
@@ -327,6 +413,7 @@
                 <hr>
                 
     </div>
+    <h1>{{poly1}}</h1>
     <script src="js/bootstrap.js"></script>
 
     <script src="js/jquery.js"></script>        
@@ -446,7 +533,48 @@ data: [
 ],
 fill: false,
 borderColor: 'rgb(54, 162, 235)'
-}]
+},
+
+
+{
+
+
+type: 'line',
+
+label: 'poly1',
+data: [
+{%for i in range(dioniceLen)%}
+    
+'{{poly1[i]}}',
+    
+
+{% endfor %}
+],
+fill: false,
+borderColor: 'rgba(255, 99, 160, 0.2)'
+},
+
+{
+
+
+type: 'line',
+
+label: 'poly2',
+data: [
+{%for i in range(dioniceLen)%}
+    
+'{{poly2[i]}}',
+    
+
+{% endfor %}
+],
+fill: false,
+borderColor: 'rgb(88, 177, 237)'
+}
+
+
+
+]
   },
 
   options: {
