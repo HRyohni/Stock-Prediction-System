@@ -5,12 +5,11 @@ import numpy as np
 from yahoo_fin.stock_info import get_data
 import matplotlib.pyplot as plt
 from flask import Flask, render_template, request,redirect
-from sklearn.linear_model import LinearRegression
-from sklearn.linear_model import LogisticRegression
-
+from sklearn.linear_model import LogisticRegression, LinearRegression
+from sklearn.preprocessing import StandardScaler
 app = Flask(__name__)
 
-
+from sklearn.model_selection import train_test_split
 def findData(tiker="TSLA",startDate='01/01/20',Interval= "1wk"):
     try:
         data = get_data(tiker, start_date = startDate, end_date = "03/03/23", interval = Interval)
@@ -56,50 +55,41 @@ def LinearnaAgregacija(data):
 
 
 def logistic_regression(x, y):          # test
-    # Convert the date values to numeric values
-    y = pd.to_datetime(y)
-    y = pd.to_numeric(y)
+    X = []
+    y = []
+    # Loop through each date string and extract the corresponding data
+    for date_string in y:
+        # Convert date string to datetime object
+        date = datetime.strptime(date_string, '%Y-%m-%d')
+        # Extract data for the given date
+        data = [d for d in x if d['date'] == date]
+        if len(data) > 0:
+            # Append data to X and y arrays
+            X.append(data[0]['predictor'])
+            y.append(data[0]['outcome'])
 
-    # Create a logistic regression model
+    # Convert X and y arrays to numpy arrays
+    X = np.array(X).reshape(-1, 1)
+    y = np.array(y)
+
+    # Split data into training and testing sets
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+
+    # Create and fit logistic regression model
     model = LogisticRegression()
+    model.fit(X_train, y_train)
 
-    # Fit the model to the data
-    model.fit(np.array(x).reshape(-1, 1), y)
+    # Make predictions on test data and calculate accuracy
+    y_pred = model.predict(X_test)
+    accuracy = accuracy_score(y_test, y_pred)
 
-    # Get the coefficients of the model
-    coef = model.coef_[0][0]
-    intercept = model.intercept_[0]
-
-
-    # plot
-
-    return coef, intercept
-
-def logistic_reg ():
-    x = np.arange(10).reshape(-1, 1)
-    y = np.array([0, 0, 0, 0, 1, 1, 1, 1, 1, 1])
-
-    model = LogisticRegression(solver='liblinear', random_state=0)
-
-    model.fit(x, y)
+    return accuracy
 
 
-    LogisticRegression(C=1.0, class_weight=None, dual=False, fit_intercept=True,
-                   intercept_scaling=1, l1_ratio=None, max_iter=100,
-                   multi_class='warn', n_jobs=None, penalty='l2',
-                   random_state=0, solver='liblinear', tol=0.0001, verbose=0,
-                   warm_start=False)
-
-    model = LogisticRegression(solver='liblinear', random_state=0).fit(x, y)
-    model.predict_proba(x)
-
-    model.predict(x)
-    model.score(x, y)
-    print(classification_report(y, model.predict(x)))
 
 @app.route('/',methods = ['GET','POST'])
 def main ():
-    logistic_reg ()
+   
 
         #default variables
     datumi =[]
@@ -187,20 +177,11 @@ def main ():
     
     # round nummbers for better view
     roundNummber(data)
-
-    x = [1, 2, 3, 4, 5]
-    y = ['2022-01-01', '2022-01-02', '2022-01-03', '2022-01-04', '2022-01-05']
-
-    #coef, intercept = logistic_regression(dionice,datumi)
-
-    #print("Coefficients: ", coef)
-    #print("Intercept: ", intercept)
         
- 
-    print(findData())
+    
+    #print("goli kurac",logistic_regression(dionice1,datumi))
+    print(dionice1)
     print(datumi)
-    print(findData()["open"])
-
     #plot_regression_line(dionice,datumi, b)
     return render_template ('index.html',datumi=datumi, datumiLen = len(datumi),dionice=dionice,dioniceLen=len(dionice),data=data,imedionice = tiker,x=x,y=y,linearLen=len(x),dionice2=dionice2, tiker2= tiker2, tiker1 = tiker1, errormsg = errormsg ,dionice1 = dionice1)
 
