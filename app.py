@@ -232,6 +232,10 @@ def main ():
 
 
 
+@app.route('/simulation',methods = ['GET','POST'])
+def Simulation ():
+   
+ return render_template ('sim.html')
 
     # basic Flask tamplate for testing
 @app.route('/test',methods = ['GET','POST'])
