@@ -1,51 +1,31 @@
-
-import numpy as np
-import matplotlib.pyplot as plt
-from yahoo_fin.stock_info import get_data # adding stock 
+import yfinance as yf
 import pandas as pd
-import datetime
-from sklearn.linear_model import LinearRegression
 from datetime import datetime
+import numpy as np
+import statsmodels.api as sm
+from yahoo_fin.stock_info import get_data
+import matplotlib.pyplot as plt
+from flask import Flask, render_template, request,redirect
+from sklearn.linear_model import LogisticRegression, LinearRegression
+from sklearn.preprocessing import StandardScaler
 
 
-def findData(tiker="TSLA",startDate='01/01/2022',Interval="1d"):
+def findData(tiker="TSLA",startDate='01/01/18',Interval= "1wk",end_date="03/03/23"):
     try:
-        data = get_data(tiker, start_date = startDate, end_date = None, interval = Interval)
+        data = get_data(tiker, start_date = startDate, end_date = end_date, interval = Interval)
+  
     except:
         
         return "Error"
     return data
 
+def Simulation(UserStartDate,UserEndDate,priceAmount,tikerName):
+    data = findData(tiker=tikerName,startDate=UserStartDate, end_date=UserEndDate)
 
+    startPrice = data.loc[UserStartDate][1] # get stock by the date
+    endPrice = data.loc[UserEndDate][1]
 
+    print(str((startPrice / endPrice) * 100)+"%")
+    return str((startPrice / endPrice) * 100)+"%"
 
-
-
-data = findData()
-
-datumi = []
-for x in data["open"].index.values:
-    datumi.append(str(x)[:-19])
-
-## test 2
-
-int_list = data["open"]
-
-# Date List
-date_list = datumi
-date_list = [datetime.strptime(date, '%Y-%m-%d') for date in date_list]
-
-# Create a DataFrame with the int and date lists
-df = pd.DataFrame({'int': int_list, 'date': date_list})
-df['date'] = (df['date'] - df['date'].min())  / np.timedelta64(1,'D')
-# Create a Linear Regression Model
-model = LinearRegression()
-model.fit(df[['date']], df['int'])
-#print(df['date'],df['int'])
-
-#Plot the linear regression graph
-plt.scatter(df['date'], df['int'], color='red')
-plt.plot(df['date'], model.predict(df[['date']]), color='blue')
-plt.xlabel('Date')
-plt.ylabel('Int')
-plt.show()
+Simulation(UserStartDate= "2018-01-01",UserEndDate= "2019-04-22",priceAmount= 23, tikerName="AAPL")
