@@ -19,13 +19,18 @@ def findData(tiker="TSLA",startDate='01/01/18',Interval= "1wk",end_date="03/03/2
         return "Error"
     return data
 
-def Simulation(UserStartDate,UserEndDate,priceAmount,tikerName):
-    data = findData(tiker=tikerName,startDate=UserStartDate, end_date=UserEndDate)
-
+def Simulation(UserStartDate,UserEndDate,amount,tikerName):
+    data = findData(tiker=tikerName,startDate=UserStartDate, end_date="2023-01-01")
+  
+    print(data)
     startPrice = data.loc[UserStartDate][1] # get stock by the date
     endPrice = data.loc[UserEndDate][1]
+    
 
-    print(str((startPrice / endPrice) * 100)+"%")
-    return str((startPrice / endPrice) * 100)+"%"
 
-Simulation(UserStartDate= "2018-01-01",UserEndDate= "2019-04-22",priceAmount= 23, tikerName="AAPL")
+    profit = endPrice - startPrice 
+    
+    
+    return str(round(profit,2)*amount)+"$ bought with:"+ str(round(startPrice,2)*amount)
+
+print("---->",Simulation(UserStartDate= "2013-01-01",UserEndDate= "2022-12-27",amount= 80, tikerName="meta"))

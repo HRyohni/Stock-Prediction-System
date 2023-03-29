@@ -87,14 +87,22 @@ def Polynomial_Regression(y):
   return mymodel(myline)
 
 
-def Simulation(UserStartDate,UserEndDate,priceAmount,tikerName):
-    data = findData(tiker=tikerName,startDate=UserStartDate, end_date=UserEndDate)
-
+def Simulation(UserStartDate, UserEndDate, amount, tikerName):
+    data = findData(tiker=tikerName, startDate=UserStartDate, end_date="2023-01-01")
+    
+    
+    start_date = datetime.strptime(UserStartDate, '%Y-%m-%d')
+    end_date = datetime.strptime(UserEndDate, '%Y-%m-%d')
+    time_difference = (end_date - start_date).days
+    
     startPrice = data.loc[UserStartDate][1] # get stock by the date
     endPrice = data.loc[UserEndDate][1]
-
-    print(str((startPrice / endPrice) * 100)+"%")
-    return str((startPrice / endPrice) * 100)+"%"
+    profit = endPrice - startPrice 
+    PoVD = endPrice / startPrice
+    AP = PoVD ** (1/time_difference) - 1
+    print("--->",str(AP))
+    
+    return str(round(profit,2)*amount)+"$ bought with:"+ str(round(startPrice,2)*amount)
 
 def logistic_regression(x, y):          # test
     X = []
@@ -226,7 +234,7 @@ def main ():
     poly1 = Polynomial_Regression(dionice1)
 
     
-    Simulation(UserStartDate= "2018-01-01",UserEndDate= "2019-04-22",priceAmount= 23, tikerName="AAPL")
+    print("---->",Simulation(UserStartDate= "2013-01-01",UserEndDate= "2022-12-27",amount= 80, tikerName="meta"))
 
 
     return render_template ('index.html',datumi=datumi, datumiLen = len(datumi),dionice=dionice,dioniceLen=len(dionice),data=data,imedionice = tiker,x=x,y=y,linearLen=len(x),dionice2=dionice2, tiker2= tiker2, tiker1 = tiker1, errormsg = errormsg ,dionice1 = dionice1, poly1 = poly1,poly2 = poly2)
