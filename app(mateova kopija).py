@@ -96,18 +96,57 @@ def kmeans():
     # ovaj blok priprema podatke kako bi sa StandardScaler() metodom
     # -----------------------------------------------------
 
-    rez_km = KMeans(n_clusters=3, n_init=10).fit(data_scaled)
-    klasteri = rez_km.labels_
-    centroidi = rez_km.cluster_centers_
+    kmeans = KMeans(n_clusters = 3, init = 'random', n_init = 10, max_iter = 100)
+    kmeans_label = kmeans.fit_predict(data_scaled)
 
-    rezultat_sve = pd.DataFrame({'ticker': data_all['ticker'], 'cluster': klasteri})
+    plt.scatter(
+        data_scaled[kmeans_label == 0, 0], data_scaled[kmeans_label == 0, 1],
+        s=50, c='green',
+        marker='o', edgecolor='black',
+        label='klaster 1'
+    )
 
-    print("Korišteni centroidi:")
-    print(centroidi)
+    plt.scatter(
+        data_scaled[kmeans_label == 1, 0], data_scaled[kmeans_label == 1, 1],
+        s=50, c='yellow',
+        marker='o', edgecolor='black',
+        label='klaster 2'
+    )
+
+    plt.scatter(
+        data_scaled[kmeans_label == 2, 0], data_scaled[kmeans_label == 2, 1],
+        s=50, c='blue',
+        marker='o', edgecolor='black',
+        label='klaster 3'
+    )
+
+    plt.scatter(
+        kmeans.cluster_centers_[:, 0], kmeans.cluster_centers_[:, 1],
+        s=75, marker='s',
+        c='red', edgecolor='black',
+        label='centroidi'
+    )
+
+    plt.legend(scatterpoints=1)
+    plt.grid()
+    plt.show()
+
+    klaster_rezultat = np.column_stack((data_all[['ticker', 'open', 'high', 'low', 'close', 'volume']].values, data_scaled, kmeans_label))
+    print("Rezultat klasteriranja: ")
+    print(klaster_rezultat)
+
+    # rez_km = KMeans(n_clusters=3, n_init=10).fit(data_scaled)
+    # klasteri = rez_km.labels_
+    # centroidi = rez_km.cluster_centers_
+
+    # rezultat_sve = pd.DataFrame({'ticker': data_all['ticker'], 'cluster': klasteri})
+
+    # print("Korišteni centroidi:")
+    # print(centroidi)
 
 
-    print("Rezultati KMeans klasteriranja:")
-    print(rezultat_sve)
+    # print("Rezultati KMeans klasteriranja:")
+    # print(rezultat_sve)
     # ovaj blok se koristi za pozivanje kmeans funkcije i ispisivanje rezultata
     # -----------------------------------------------------
 
