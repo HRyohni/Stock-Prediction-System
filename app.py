@@ -12,8 +12,10 @@ import math
 app = Flask(__name__)
 
 from sklearn.model_selection import train_test_split
-def findData(tiker="TSLA",startDate='01/01/18',Interval= "1wk",end_date="03/03/23"):
+def findData(tiker="TSLA",startDate='01/01/15',Interval= "1wk",end_date="01/04/24"):
     try:
+        
+       
         data = get_data(tiker, start_date = startDate, end_date = end_date, interval = Interval)
   
     except:
@@ -89,7 +91,7 @@ def Polynomial_Regression(y):
 
 
 def Simulation(UserStartDate, UserEndDate, amount, tikerName):
-    data = findData(tiker=tikerName, startDate=UserStartDate, end_date="2023-01-01", Interval="1d")
+    data = findData(tiker=tikerName, startDate=UserStartDate, end_date="2023-04-01", Interval="1d")
     PoVD_AS = []
     GS = 0
     
@@ -105,30 +107,32 @@ def Simulation(UserStartDate, UserEndDate, amount, tikerName):
     godine = []
     for x in range(int(UserStartDate.split('-')[0]),int(UserEndDate.split('-')[0])):
         godine.append(x)
-        print(findData())
+        
     
     for x in range(len(godine)):
         
         try: # za svaku godinu NISTA NE RADI
-            print(findData(tiker=tikerName, startDate= str (str(godine[x]) + "-" + str(UserStartDate)[5:]), end_date= pd.to_datetime(str (str(godine[x]) + "-" + str(UserStartDate)[5:])) + pd.DateOffset(days=1), Interval="1d"))
+            
             temp = findData(tiker=tikerName, startDate= str (str(godine[x]) + "-" + str(UserStartDate)[5:]), end_date= pd.to_datetime(str (str(godine[x]) + "-" + str(UserStartDate)[5:])) + pd.DateOffset(days=1), Interval="1d")
             temp2 = findData(tiker=tikerName, startDate= str (str(godine[x]+1) + "-" + str(UserStartDate)[5:]), end_date= pd.to_datetime(str (str(godine[x]+1) + "-" + str(UserStartDate)[5:])) + pd.DateOffset(days=1), Interval="1d")
             GS *= temp2 ["open"][0] / temp["open"][0]
-            print(temp2 ["open"][0] / temp["open"][0])
+            
             
             
             
         except: # za vikende
-            print(findData(tiker=tikerName, startDate= str (str(godine[x]) + "-" + str(UserStartDate)[5:]), end_date= pd.to_datetime(str (str(godine[x]) + "-" + str(UserStartDate)[3:])) + pd.DateOffset(days=1), Interval="1d"))
+            print("Error_Godine")
     for x in PoVD_AS:
         GS += GS ** 1/ len(godine)-1
-    print(PoVD_AS,"<---")
-    print(godine)
-    print(GS,"<<---- rijesenje")
+   
 
     profit = endPrice - startPrice  # profit
     PoVD = endPrice / startPrice # Povrat za vrijeme drˇzanja
-    AP = PoVD ** (1/time_difference) - 1 # Anualizirani povrat
+    print(PoVD,"povid")
+    print(len(godine),"godine")
+
+    AP = PoVD ** (1 / 3) # !Anualizirani povrat ne radi
+    print(AP,PoVD,"godine",len(godine)+1)
     
     
     # return str(round(profit,2)*amount)+"$ bought with:"+ str(round(startPrice,2)*amount)
@@ -237,14 +241,14 @@ def main ():
             drugaDionica = findData(tiker2)
 
         if 'STikername' in request.form or 'SAmount' in request.form:
-            print("kurac")
+            
             # importing input from web
             Stikername = request.form['STikername']   
             SAmount = request.form['SAmount'] 
             SDateFrom = request.form['SDateFrom'] 
             SDateTo = request.form['SDateTo'] 
             days = days_between_dates(SDateFrom,SDateTo)
-            print  ( days / 365 ,"godinaaa")
+            
             AP ,PoVD = Simulation(UserStartDate= SDateFrom,UserEndDate= SDateTo,amount= SAmount, tikerName=Stikername)
             SDionice = findData(tiker=Stikername, startDate=SDateFrom, end_date=SDateTo, Interval="1d")
             for x in SDionice["open"].index.values:
@@ -316,3 +320,4 @@ def test ():
     # just keep it like this
 if __name__ == "__main__":
     app.run(debug = True)
+    #app.run(host='0.0.0.0', port=5000)

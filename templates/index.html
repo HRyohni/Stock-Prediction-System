@@ -26,26 +26,9 @@
           </button>
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-              <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="#">Home</a>
-              </li>
-             
-
-
-              <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  Dropdown
-                </a>
-                <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="#">Action</a></li>
-                  <li><a class="dropdown-item" href="#">Another action</a></li>
-                  <li><hr class="dropdown-divider"></li>
-                  <li><a class="dropdown-item" href="#">Something else here</a></li>
-                </ul>
+            
               </li>
 
-             
-              <h1 style="text-align: center;">Price</h1>
 
       
             </ul>
@@ -63,7 +46,7 @@
 
       <nav class="navbar fixed-bottom bg-body-tertiary">
         <div class="container-fluid">
-          <a class="navbar-brand" href="#">Created by yohni tm</a>
+          <a class="navbar-brand" href="#">Created by love ♥</a>
         </div>
       </nav>
 
@@ -89,16 +72,6 @@
                   </div>
 
                  
-                
-              
-
-                    <h1>Write code here</h1>
-                    <h1>test</h1>
-                    <h1 >test</h1>
-                    <h1>test</h1>
-                    <h1>test <i class="bi bi-123"></i></h1>
-
-
                     <hr>
 
                 <!--toggle sidebar button
@@ -412,31 +385,28 @@
 
                   <hr>
                 <h1 style="text-align: center;">Simulation</h1>
-                <form method="POST" class="d-flex" role="Scalculate">
+                <form method="POST" class="d-flex" role="Scalculate" >
                   <div class="container" style="width: 50%;">
                     <div class="row">
                       <h1>Tiker name</h1>            
                       
                       <div class="col-sm">
                         <input type="text" name="STikername" class="form-control" placeholder="Tiker name">
-                        <h3>Amount of $</h3>
-                      <input type="number" name="SAmount" class="form-control" placeholder="Dollars">
+                        <h3>Amount of Money</h3>
+                        <input type="number" name="SAmount" class="form-control" placeholder="Dollars">
+                        
+                      <div class="col-sm">
                         <h3>Date from</h3>
                         <input type="date" name="SDateFrom" id="date-input" class="form-control" placeholder="Date">
                       </div>
-                      <div class="col-sm">
                         <h3>Date To</h3>
                         <input type="date" id="date-input" name="SDateTo" class="form-control" placeholder="Date">
                         <br>
-                        <button style="width: 100%;" type="submit" class="btn btn-light">Buy</button>
+                        <button style="width: 100px; margin-left: 100%;" type="submit" class="btn btn-light">Buy</button>
                         
                        
                       </div>
-                      <div class="col-sm">
-                        
-                       
-                        
-                      </div>
+                      
                     </div>
                   </div>
                 </form>
@@ -446,16 +416,15 @@
                 {%if SDionice[0] != []%}
                 <div class="container" style="width: 90%;">
                   
+                  {%if SDioniceLen > 0%}
                   <hr>
-
-
                   <div class="row my-4">
                     <div class="col-lg-3 col-md-4">
                         <div class="card">
                             <img class="card-img-top img-fluid" src="//placehold.it/740x180/bbb/fff?text=..." alt="Card image cap">
                             <div class="card-body">
                                 <h4 class="card-title">Resaults</h4>
-                                {%if SDioniceLen > 0%}
+                                
                                 <p>Profit over time:</p>
                   <p>Pocetna Vrijednost:</p>
                   
@@ -470,7 +439,7 @@
                   <h5>{{PoVD}}%</h5>
                   <p>Aritmetička sredina:</p>
                   <h5>{{PoVD}}%</h5>
-                  {%endif%}
+                  
            
                   <a id="more"></a>
                                 <a href="#" class="btn btn-primary">Button</a>
@@ -505,6 +474,7 @@
                
                 
     </div>
+    {%endif%}
     {%endif%}
     <script src="js/bootstrap.js"></script>
 
