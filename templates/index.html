@@ -282,7 +282,8 @@
                         </div>
                       
                     </div>
-                  
+                    </div>
+                
                         </div>
                         <form method="POST" style="width: 500px;">
 
@@ -411,23 +412,23 @@
 
                   <hr>
                 <h1 style="text-align: center;">Simulation</h1>
-                <form>
+                <form method="POST" class="d-flex" role="Scalculate">
                   <div class="container" style="width: 50%;">
                     <div class="row">
                       <h1>Tiker name</h1>            
                       
                       <div class="col-sm">
-                        <input type="text" class="form-control" placeholder="Tiker name">
+                        <input type="text" name="STikername" class="form-control" placeholder="Tiker name">
                         <h3>Amount of $</h3>
-                      <input type="number" class="form-control" placeholder="Dollars">
+                      <input type="number" name="SAmount" class="form-control" placeholder="Dollars">
                         <h3>Date from</h3>
-                        <input type="date" class="form-control" placeholder="Date">
+                        <input type="date" name="SDateFrom" id="date-input" class="form-control" placeholder="Date">
                       </div>
                       <div class="col-sm">
                         <h3>Date To</h3>
-                        <input type="date" class="form-control" placeholder="Date">
+                        <input type="date" id="date-input" name="SDateTo" class="form-control" placeholder="Date">
                         <br>
-                        <button style="width: 100%;" type="button" class="btn btn-light">Buy</button>
+                        <button style="width: 100%;" type="submit" class="btn btn-light">Buy</button>
                         
                        
                       </div>
@@ -439,21 +440,72 @@
                     </div>
                   </div>
                 </form>
+               
+                
                 <hr>
-                <div class="container" style="width: 50%;">
-                  <h2>Profit over time:</h2>
-                  <h3>223223</h3>
-                  <h3>time spend:</h3>
-                  <h3>223 Days</h3>
-                  <h3>Povrat za vrijeme drˇzanja (PoVD)</h3>
-                  <h3>12%</h3>
-                  <a id="more"></a>
+                {%if SDionice[0] != []%}
+                <div class="container" style="width: 90%;">
+                  
                   <hr>
+
+
+                  <div class="row my-4">
+                    <div class="col-lg-3 col-md-4">
+                        <div class="card">
+                            <img class="card-img-top img-fluid" src="//placehold.it/740x180/bbb/fff?text=..." alt="Card image cap">
+                            <div class="card-body">
+                                <h4 class="card-title">Resaults</h4>
+                                {%if SDioniceLen > 0%}
+                                <p>Profit over time:</p>
+                  <p>Pocetna Vrijednost:</p>
+                  
+                  <h5>{{SDionice["open"][0]}}</h5>
+                  <p>Konačna Vrijednost:</p>
+                  <h5>{{SDionice["open"][SDioniceLen-1]}}</h5>
+                  <p>Anualizirani povrat:</p>
+                  <h5>{{AP}}%</h5>
+                  <p>days ago:</p>
+                  <h5>{{days}} Days</h5>
+                  <p>Povrat za vrijeme držanja (PoVD)</p>
+                  <h5>{{PoVD}}%</h5>
+                  <p>Aritmetička sredina:</p>
+                  <h5>{{PoVD}}%</h5>
+                  {%endif%}
+           
+                  <a id="more"></a>
+                                <a href="#" class="btn btn-primary">Button</a>
+                            </div>
+                        </div>
+                        <div class="card card-inverse bg-inverse mt-3">
+                            <div class="card-body">
+                                <h3 class="card-title">Flexbox</h3>
+                                <p class="card-text">Flexbox is now the default, and Bootstrap 4 supports SASS out of the box.</p>
+                                <a href="#" class="btn btn-outline-secondary">Outline</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-9 col-md-8">
+                        
+
+                        <thead class="thead-inverse">
+
+
+                        </thead>
+                        <div class="table-responsive">
+                            <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                                
+                              <canvas   id="SmyChart"></canvas>
+                            
+                        </div>
+                      
+                    </div>
+                  </div>
+                  
                 </div>
                
                 
     </div>
-  
+    {%endif%}
     <script src="js/bootstrap.js"></script>
 
     <script src="js/jquery.js"></script>        
@@ -530,6 +582,43 @@
       }
     });
 
+
+    const Sctx = document.getElementById('SmyChart');
+
+new Chart(Sctx, 
+{
+  type: 'line',
+  data: {
+    labels: [ 
+        
+    {% for x in range(SdatumiLen) %}
+        '{{Sdatumi[x]}}',
+    {% endfor %}
+],
+datasets: [{
+
+type: 'line',
+label: 'dionica',
+data: [
+{%for x in range(SDioniceLen)%}
+    
+    '{{SDionice["open"][x]}}',
+
+{% endfor %}
+],
+borderColor: 'rgb(255, 99, 132)',
+backgroundColor: 'rgba(255, 99, 132, 0.2)'
+}]
+  },
+
+  options: {
+    scales: {
+      y: {
+        beginAtZero: true
+      }
+    }
+  }
+});
 
 
 const ctx1 = document.getElementById('compare');
@@ -623,6 +712,21 @@ borderColor: 'rgb(88, 177, 237)'
         beginAtZero: true
       }
     }
+  }
+});
+
+
+
+const dateInput = document.getElementById('date-input');
+
+dateInput.addEventListener('input', function(event) {
+  const selectedDate = new Date(event.target.value);
+  const dayOfWeek = selectedDate.getDay();
+  
+  if (dayOfWeek === 5 || dayOfWeek === 6 || dayOfWeek === 0) {
+    event.target.setCustomValidity('Please select a date between Monday and Thursday.');
+  } else {
+    event.target.setCustomValidity('');
   }
 });
 

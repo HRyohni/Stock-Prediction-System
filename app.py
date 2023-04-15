@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 from flask import Flask, render_template, request,redirect
 from sklearn.linear_model import LogisticRegression, LinearRegression
 from sklearn.preprocessing import StandardScaler
+import math
 app = Flask(__name__)
 
 from sklearn.model_selection import train_test_split
@@ -88,8 +89,9 @@ def Polynomial_Regression(y):
 
 
 def Simulation(UserStartDate, UserEndDate, amount, tikerName):
-    data = findData(tiker=tikerName, startDate=UserStartDate, end_date="2023-01-01")
-    
+    data = findData(tiker=tikerName, startDate=UserStartDate, end_date="2023-01-01", Interval="1d")
+    PoVD_AS = []
+    GS = 0
     
     start_date = datetime.strptime(UserStartDate, '%Y-%m-%d')
     end_date = datetime.strptime(UserEndDate, '%Y-%m-%d')
@@ -97,12 +99,40 @@ def Simulation(UserStartDate, UserEndDate, amount, tikerName):
     
     startPrice = data.loc[UserStartDate][1] # get stock by the date
     endPrice = data.loc[UserEndDate][1]
-    profit = endPrice - startPrice 
-    PoVD = endPrice / startPrice
-    AP = PoVD ** (1/time_difference) - 1
-    print("--->",str(AP))
+    #end_date = date_1 + datetime.timedelta(days=10)
     
-    return str(round(profit,2)*amount)+"$ bought with:"+ str(round(startPrice,2)*amount)
+        # racunanje Artimeticke sredine
+    godine = []
+    for x in range(int(UserStartDate.split('-')[0]),int(UserEndDate.split('-')[0])):
+        godine.append(x)
+        print(findData())
+    
+    for x in range(len(godine)):
+        
+        try: # za svaku godinu NISTA NE RADI
+            print(findData(tiker=tikerName, startDate= str (str(godine[x]) + "-" + str(UserStartDate)[5:]), end_date= pd.to_datetime(str (str(godine[x]) + "-" + str(UserStartDate)[5:])) + pd.DateOffset(days=1), Interval="1d"))
+            temp = findData(tiker=tikerName, startDate= str (str(godine[x]) + "-" + str(UserStartDate)[5:]), end_date= pd.to_datetime(str (str(godine[x]) + "-" + str(UserStartDate)[5:])) + pd.DateOffset(days=1), Interval="1d")
+            temp2 = findData(tiker=tikerName, startDate= str (str(godine[x]+1) + "-" + str(UserStartDate)[5:]), end_date= pd.to_datetime(str (str(godine[x]+1) + "-" + str(UserStartDate)[5:])) + pd.DateOffset(days=1), Interval="1d")
+            GS *= temp2 ["open"][0] / temp["open"][0]
+            print(temp2 ["open"][0] / temp["open"][0])
+            
+            
+            
+        except: # za vikende
+            print(findData(tiker=tikerName, startDate= str (str(godine[x]) + "-" + str(UserStartDate)[5:]), end_date= pd.to_datetime(str (str(godine[x]) + "-" + str(UserStartDate)[3:])) + pd.DateOffset(days=1), Interval="1d"))
+    for x in PoVD_AS:
+        GS += GS ** 1/ len(godine)-1
+    print(PoVD_AS,"<---")
+    print(godine)
+    print(GS,"<<---- rijesenje")
+
+    profit = endPrice - startPrice  # profit
+    PoVD = endPrice / startPrice # Povrat za vrijeme drˇzanja
+    AP = PoVD ** (1/time_difference) - 1 # Anualizirani povrat
+    
+    
+    # return str(round(profit,2)*amount)+"$ bought with:"+ str(round(startPrice,2)*amount)
+    return AP, round(PoVD,2)
 
 def logistic_regression(x, y):          # test
     X = []
@@ -136,10 +166,22 @@ def logistic_regression(x, y):          # test
     return accuracy
 
 
+def days_between_dates(date1, date2):
+    date_format = "%Y-%m-%d"
+    date1_obj = datetime.strptime(date1, date_format)
+    date2_obj = datetime.strptime(date2, date_format)
+    diff_days = abs((date2_obj - date1_obj).days)
+    return diff_days
+
 
 @app.route('/',methods = ['GET','POST'])
 def main ():
-   
+    # simulacija
+    AP = 0  
+    days =""
+    PoVD = ""
+    Sdatumi =[]
+    SDionice=[]
 
         #default variables
     datumi =[]
@@ -164,6 +206,7 @@ def main ():
 
         # on post
     if request.method == "POST":
+        
             # if post is search
         if 'search' in request.form:
 
@@ -192,7 +235,20 @@ def main ():
             # getting second tiker from user input
             tiker2 = request.form['secondary'].upper()
             drugaDionica = findData(tiker2)
-        
+
+        if 'STikername' in request.form or 'SAmount' in request.form:
+            print("kurac")
+            # importing input from web
+            Stikername = request.form['STikername']   
+            SAmount = request.form['SAmount'] 
+            SDateFrom = request.form['SDateFrom'] 
+            SDateTo = request.form['SDateTo'] 
+            days = days_between_dates(SDateFrom,SDateTo)
+            print  ( days / 365 ,"godinaaa")
+            AP ,PoVD = Simulation(UserStartDate= SDateFrom,UserEndDate= SDateTo,amount= SAmount, tikerName=Stikername)
+            SDionice = findData(tiker=Stikername, startDate=SDateFrom, end_date=SDateTo, Interval="1d")
+            for x in SDionice["open"].index.values:
+                Sdatumi.append(str(x)[:-19])
 
                 
 
@@ -233,11 +289,8 @@ def main ():
         # poly from first stock
     poly1 = Polynomial_Regression(dionice1)
 
-    
-    print("---->",Simulation(UserStartDate= "2013-01-01",UserEndDate= "2022-12-27",amount= 80, tikerName="meta"))
 
-
-    return render_template ('index.html',datumi=datumi, datumiLen = len(datumi),dionice=dionice,dioniceLen=len(dionice),data=data,imedionice = tiker,x=x,y=y,linearLen=len(x),dionice2=dionice2, tiker2= tiker2, tiker1 = tiker1, errormsg = errormsg ,dionice1 = dionice1, poly1 = poly1,poly2 = poly2)
+    return render_template ('index.html',datumi=datumi, datumiLen = len(datumi),dionice=dionice,dioniceLen=len(dionice),data=data,imedionice = tiker,x=x,y=y,linearLen=len(x),dionice2=dionice2, tiker2= tiker2, tiker1 = tiker1, errormsg = errormsg ,dionice1 = dionice1, poly1 = poly1,poly2 = poly2, AP = round(AP,4),PoVD=PoVD,days=days,Sdatumi = Sdatumi,SDionice = SDionice,SdatumiLen = len(Sdatumi),SDioniceLen = len(SDionice))
 
 
 

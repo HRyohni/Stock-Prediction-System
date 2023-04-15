@@ -25,12 +25,7 @@ def Simulation(UserStartDate,UserEndDate,amount,tikerName):
     print(data)
     startPrice = data.loc[UserStartDate][1] # get stock by the date
     endPrice = data.loc[UserEndDate][1]
-    
-
-
     profit = endPrice - startPrice 
-    
-    
     return str(round(profit,2)*amount)+"$ bought with:"+ str(round(startPrice,2)*amount)
 
 print("---->",Simulation(UserStartDate= "2013-01-01",UserEndDate= "2022-12-27",amount= 80, tikerName="meta"))
