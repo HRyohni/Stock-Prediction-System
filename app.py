@@ -126,17 +126,16 @@ def Simulation(UserStartDate, UserEndDate, amount, tikerName):
         GS += GS ** 1/ len(godine)-1
    
 
-    profit = endPrice - startPrice  # profit
-    PoVD = endPrice / startPrice # Povrat za vrijeme drˇzanja
-    print(PoVD,"povid")
-    print(len(godine),"godine")
 
-    AP = PoVD ** (1 / 3) # !Anualizirani povrat ne radi
-    print(AP,PoVD,"godine",len(godine)+1)
+    profit = int(amount) * endPrice  # profit
+    PoVD = endPrice / startPrice # Povrat za vrijeme drˇzanja
+    
+    AP = PoVD ** (1 / 3)
+   
     
     
     # return str(round(profit,2)*amount)+"$ bought with:"+ str(round(startPrice,2)*amount)
-    return AP, round(PoVD,2)
+    return AP, round(PoVD,2),profit
 
 def logistic_regression(x, y):          # test
     X = []
@@ -182,6 +181,7 @@ def days_between_dates(date1, date2):
 def main ():
     # simulacija
     AP = 0  
+    profit = 0
     days =""
     PoVD = ""
     Sdatumi =[]
@@ -249,7 +249,7 @@ def main ():
             SDateTo = request.form['SDateTo'] 
             days = days_between_dates(SDateFrom,SDateTo)
             
-            AP ,PoVD = Simulation(UserStartDate= SDateFrom,UserEndDate= SDateTo,amount= SAmount, tikerName=Stikername)
+            AP ,PoVD, profit = Simulation(UserStartDate= SDateFrom,UserEndDate= SDateTo,amount= SAmount, tikerName=Stikername)
             SDionice = findData(tiker=Stikername, startDate=SDateFrom, end_date=SDateTo, Interval="1d")
             for x in SDionice["open"].index.values:
                 Sdatumi.append(str(x)[:-19])
@@ -294,7 +294,7 @@ def main ():
     poly1 = Polynomial_Regression(dionice1)
 
 
-    return render_template ('index.html',datumi=datumi, datumiLen = len(datumi),dionice=dionice,dioniceLen=len(dionice),data=data,imedionice = tiker,x=x,y=y,linearLen=len(x),dionice2=dionice2, tiker2= tiker2, tiker1 = tiker1, errormsg = errormsg ,dionice1 = dionice1, poly1 = poly1,poly2 = poly2, AP = round(AP,4),PoVD=PoVD,days=days,Sdatumi = Sdatumi,SDionice = SDionice,SdatumiLen = len(Sdatumi),SDioniceLen = len(SDionice))
+    return render_template ('index.html',datumi=datumi, datumiLen = len(datumi),dionice=dionice,dioniceLen=len(dionice),data=data,imedionice = tiker,x=x,y=y,linearLen=len(x),dionice2=dionice2, tiker2= tiker2, tiker1 = tiker1, errormsg = errormsg ,dionice1 = dionice1, poly1 = poly1,poly2 = poly2, AP = round(AP*100,2),PoVD=PoVD,days=days,Sdatumi = Sdatumi,SDionice = SDionice,SdatumiLen = len(Sdatumi),SDioniceLen = len(SDionice),profit = profit)
 
 
 

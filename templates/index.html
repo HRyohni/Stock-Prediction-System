@@ -392,7 +392,7 @@
                       
                       <div class="col-sm">
                         <input type="text" name="STikername" class="form-control" placeholder="Tiker name">
-                        <h3>Amount of Money</h3>
+                        <h3>Amount of Stocks</h3>
                         <input type="number" name="SAmount" class="form-control" placeholder="Dollars">
                         
                       <div class="col-sm">
@@ -437,8 +437,12 @@
                   <h5>{{days}} Days</h5>
                   <p>Povrat za vrijeme držanja (PoVD)</p>
                   <h5>{{PoVD}}%</h5>
-                  <p>Aritmetička sredina:</p>
-                  <h5>{{PoVD}}%</h5>
+                  <p>Profit:</p>
+                  {%if profit < SDionice["open"][0] %}
+                  <h5 style=" color: red;">{{profit}}$</h5>
+                        {%else%}
+                  <h5 style="color: green;">{{profit}}$</h5>
+                  {%endif%}
                   
            
                   <a id="more"></a>
