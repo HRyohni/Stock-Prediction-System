@@ -278,109 +278,6 @@
                         <canvas style="width: 100px;"  id="compare"></canvas>
                         {%endif%}
 
-                        <h1 style="text-align: centers;">Time series regression</h1>
-
-
-
-
-                        <div class="container text-center">
-                          <div class="row">
-                            <div class="col">
-                              <div>Model:</div>
-                              <div>Date:</div>
-                              <div>Time:</div>
-                              <div>Sample:</div>
-                              
-                            </div>
-                            <div class="col">
-                              <div>Model:</div>
-                              <div>Date:</div>
-                              <div>Time:</div>
-                              <div>Sample:</div>
-                              
-                            </div>
-                            <div class="col">
-                             <div>No. Observations:</div> 
-                             <div>Log Likelihood</div> 
-                             <div>AIC</div> 
-                             <div>BIC</div> 
-                             <div>HQIC</div> 
-                              
-                              
-                            </div>
-                            <div class="col">
-                              <div>Model:</div>
-                              <div>Date:</div>
-                              <div>Time:</div>
-                              <div>Sample:</div>
-                              
-                            </div>
-                          </div>
-                          <hr>
-                          <div class="row">
-                            <div class="col">
-                              <div></div>
-                              <div>ar.L1</div>
-                              <div>ma.L1</div>
-                              <div>Sigma2</div>
-                              
-                            </div>
-                            <div class="col">
-                              <div>coef:</div>
-                              <div>x</div>
-                              <div>x</div>
-                              <div>x</div>
-                              
-                            </div>
-                            <div class="col">
-                             <div>std err</div> 
-                             <div>x</div> 
-                             <div>x</div> 
-                             <div>x</div> 
-                             <div>x</div> 
-                              
-                              
-                            </div>
-                            <div class="col">
-                              <div>z</div>
-                              <div>x</div>
-                              <div>x</div>
-                              <div>x</div>
-                              
-                            </div>
-                            <div class="col">
-                              <div> P>|z|</div>
-                              <div>x</div>
-                              <div>x</div>
-                              <div>x</div>
-                              
-                            </div>
-                            <div class="col">
-                              <div>[data  </div>
-                              <div>x</div>
-                              <div>x</div>
-                              <div>x</div>
-                              
-                            </div>
-                            <div class="col">
-                              <div>  data]</div>
-                              <div>x</div>
-                              <div>x</div>
-                              <div>x</div>
-                              
-                            </div>
-                          </div>
-                          <div class="row">
-                            <div class="col">
-                              <div>
-
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                    </div>
-                    
-                </div>
                 <!--/row-->
 
                   <hr>
@@ -482,9 +379,83 @@
     </div>
     {%endif%}
     {%endif%}
+    
 <div style="text-align: center;">
-<hr>
+
 <h1>Correlation</h1>
+
+
+
+
+<form method="POST">
+  
+  <div class="form-group">
+    <h3>Date From</h3>
+        <input type="date" name="tikerOd" id="date-input" class="form-control" placeholder="Date">
+    <h3>Date To</h3>
+        <input type="date" name="tikerDo" id="date-input" class="form-control" placeholder="Date">
+    <label style="padding: 20px;" for="exampleFormControlTextarea1">Write tiker names</label>
+    <textarea name="tikeri" class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+  </div>
+
+  <button style="margin: 50px;" type="submit" class="btn btn-light">Calculate</button>
+  
+  
+
+
+  
+</form>
+
+
+{%if tikerOd != ""%}
+<img style="background-color: aliceblue; margin: 50px;"  src="/static/img/correlation.png" class="img-thumbnail" >
+<img style="background-color: aliceblue; margin: 50px;"  src="/static/img/kmeans.png" class="img-thumbnail" >
+{%endif%}
+
+<thead class="thead-inverse">
+                                    
+
+  <table class="table table-bordered table-striped mb-0">
+      <tr style="text-align: center;">
+          <th>Datum</th>
+
+          <th>Open</th>
+          <th>Low</th>
+          <th>High</th>
+          <th>AdjClose</th>
+          <th>Volume</th>
+      </tr>
+   
+  </table>
+
+
+</thead>
+<div class="table-responsive">
+  <div class="table-wrapper-scroll-y my-custom-scrollbar">
+<table class="table table-bordered table-striped mb-0">
+<tbody>
+                             
+  <div  class="overflow-auto">
+   
+{%for x in range(kmeansLen)%}
+<tr style="text-align: center; margin: 50px;"> 
+    <td>{{x}}</td>
+    
+    <td style="color: white;">{{ kmeans["Prvi Tiker"][x] }} </td>
+
+    <td style="color: white;">{{kmeans["Drugi Tiker"][x]}} </td>
+  
+
+    <td style="color: white;">{{kmeans["Korelacija"][x]}} </td>
+
+    <td style="color: white;">{{kmeans["Klasa"][x]}} </td>
+</tr>
+{%endfor%}
+</div>
+</tbody>
+</table>
+  </div>
+</div>
 </div>
     
     <script src="js/bootstrap.js"></script>

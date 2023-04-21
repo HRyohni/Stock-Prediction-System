@@ -9,6 +9,8 @@ from flask import Flask, render_template, request,redirect
 from sklearn.linear_model import LogisticRegression, LinearRegression
 from sklearn.preprocessing import StandardScaler
 import math
+import seaborn as sns
+from sklearn.cluster import KMeans
 app = Flask(__name__)
 
 from sklearn.model_selection import train_test_split
@@ -57,6 +59,78 @@ def LinearnaAgregacija(data):
     model.fit(df[['date']], df['int'])
     return model.predict(df[['date']]) , df['int']
 
+
+
+def correlation(start_date,end_date_str,symbols_list):
+
+    # Retrieve stock data from Yahoo Finance using yfinance
+    symbols = []
+    for ticker in symbols_list:
+        try:
+            r = yf.download(ticker, start=start_date, end=end_date_str)
+            # Add ticker symbol as a column
+            r['Symbol'] = ticker 
+            symbols.append(r)
+        except Exception as e:
+           print(f"Error retrieving data for symbol {ticker}: {e}")
+
+    # Combine stock data into a single DataFrame
+    df = pd.concat(symbols)
+    df = df.reset_index()
+    df = df[['Date', 'Close', 'Symbol']]
+
+    # Pivot table to get data in the required format for correlation matrix
+    df_pivot = df.pivot('Date', 'Symbol', 'Close').reset_index()
+
+    # Calculate Spearman correlation matrix
+    corr_df = df_pivot.corr(method='spearman')
+
+    # Display correlation matrix as heatmap using Seaborn
+    plt.figure(figsize=(20, 15))  # Specify the size of the figure
+    heatmap = sns.heatmap(corr_df, cmap='coolwarm',linecolor="black", annot=True, fmt=".2f" ,annot_kws={"color": "black"}, cbar_kws={'orientation': 'vertical'})  # Customize the heatmap
+    sns.color_palette("rocket", as_cmap=True)
+    cbar = heatmap.collections[0].colorbar  # Get the colorbar
+    cbar.set_label('Correlation', color='white')  # Set the color of the label to white
+    plt.title('Spearman Correlation Matrix')
+    plt.savefig('static/img/correlation.png', dpi=300, transparent=True, bbox_inches='tight', pad_inches=0)  # Save the figure as a PNG file with transparent background
+    print("Correlation matrix saved as correlation.png")
+
+
+    corrMatrica = corr_df.to_numpy()
+    tikerParovi=[]
+    # Get indices of the upper triangle (excluding diagonal) and convert them to ticker pairs
+    rowIndeks, kolIndeks = np.triu_indices(corrMatrica.shape[0], k=1)
+    tikerParovi = [(symbols_list[row], symbols_list[col]) for row, col in zip(rowIndeks, kolIndeks)]
+
+    # Get the upper triangle values and reshape them into a 2D array with a single column
+    KMPodaci = corrMatrica[rowIndeks, kolIndeks].reshape(-1, 1)
+
+    print(KMPodaci)
+
+    kMeans = KMeans(n_clusters=5, init='k-means++', n_init=10)
+    kMeans.fit(KMPodaci)
+
+    oznake = kMeans.labels_  # klaster oznake za svaki podatak
+
+    fig, ax = plt.subplots(figsize=(8, 6))  # stvaranje grafa
+
+    scatterGraf = ax.scatter(KMPodaci, oznake, c=oznake, cmap='viridis')
+
+    ax.set_xlabel('Vrijednosti korelacije gornjeg sektora')
+    ax.set_ylabel('Klaster')
+    ax.set_title('Rezultati klasteriranja')
+    plt.savefig('static/img/kmeans.png', dpi=300, transparent=True, bbox_inches='tight', pad_inches=0)
+    
+
+    # Creating a dataframe to store the ticker pairs, correlation values, and assigned clusters
+    klasteriraniPodaci = pd.DataFrame(tikerParovi, columns=['Prvi Tiker', 'Drugi Tiker'])
+    klasteriraniPodaci['Korelacija'] = KMPodaci.flatten()
+    klasteriraniPodaci['Klasa'] = oznake
+
+    # Displaying the resulting dataframe
+    return klasteriraniPodaci
+
+    
 
 def perform_time_series_regression(cost_array, date_array):
     # Create a pandas dataframe with the cost and date arrays
@@ -199,6 +273,11 @@ def main ():
     poly1= []
     poly2= []
 
+    #correlation
+    tikerOd = ""
+    kmeans = []
+    
+
     # compersion tikers
     tiker1 = "TSLA"
     prvaDionica = findData(tiker1)
@@ -253,6 +332,17 @@ def main ():
             SDionice = findData(tiker=Stikername, startDate=SDateFrom, end_date=SDateTo, Interval="1d")
             for x in SDionice["open"].index.values:
                 Sdatumi.append(str(x)[:-19])
+        #  ? tikeri korelacija
+
+        if 'tikeri' in request.form:
+            tikeri = request.form['tikeri'] 
+            tikerDo = request.form['tikerDo'] 
+            tikerOd = request.form['tikerOd'] 
+            tikeri = tikeri.split(" ")
+            kmeans = correlation(tikerOd,tikerDo,tikeri)
+            print(kmeans)
+        
+
 
                 
 
@@ -292,9 +382,10 @@ def main ():
     # gets polynomial regression
         # poly from first stock
     poly1 = Polynomial_Regression(dionice1)
+    poly2 = Polynomial_Regression(dionice2)
 
-
-    return render_template ('index.html',datumi=datumi, datumiLen = len(datumi),dionice=dionice,dioniceLen=len(dionice),data=data,imedionice = tiker,x=x,y=y,linearLen=len(x),dionice2=dionice2, tiker2= tiker2, tiker1 = tiker1, errormsg = errormsg ,dionice1 = dionice1, poly1 = poly1,poly2 = poly2, AP = round(AP*100,2),PoVD=PoVD,days=days,Sdatumi = Sdatumi,SDionice = SDionice,SdatumiLen = len(Sdatumi),SDioniceLen = len(SDionice),profit = profit)
+    
+    return render_template ('index.html',datumi=datumi, datumiLen = len(datumi),dionice=dionice,dioniceLen=len(dionice),data=data,imedionice = tiker,x=x,y=y,linearLen=len(x),dionice2=dionice2, tiker2= tiker2, tiker1 = tiker1, errormsg = errormsg ,dionice1 = dionice1, poly1 = poly1,poly2 = poly2, AP = round(AP*100,2),PoVD=PoVD,days=days,Sdatumi = Sdatumi,SDionice = SDionice,SdatumiLen = len(Sdatumi),SDioniceLen = len(SDionice),profit = profit,tikerOd = tikerOd,kmeans = kmeans, kmeansLen = len(kmeans))
 
 
 
