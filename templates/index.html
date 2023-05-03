@@ -143,28 +143,18 @@
     
                 <a id="features"></a>
                 <hr>
-                <p class="lead mt-5">
-                    Are you ready for Bootstap 4? It's the 4th generation of this popular responsive framework. Bootstrap 4 will include some interesting 
-                    new features such as flexbox, 5 grid sizes (now including xl), cards, `em` sizing, CSS normalization (reboot) and larger font
-                    sizes.
-                </p>
+              
                 <div class="row my-4">
                     <div class="col-lg-3 col-md-4">
                         <div class="card">
-                            <img class="card-img-top img-fluid" src="//placehold.it/740x180/bbb/fff?text=..." alt="Card image cap">
+                            
                             <div class="card-body">
-                                <h4 class="card-title">Layouts</h4>
-                                <p class="card-text">Flexbox provides simpler, more flexible layout options like vertical centering.</p>
-                                <a href="#" class="btn btn-primary">Button</a>
+                                <h4 class="card-title">{{imedionice}}</h4>
+                                <p class="card-text">Statistics about your tiker input:</p>
+                                
                             </div>
                         </div>
-                        <div class="card card-inverse bg-inverse mt-3">
-                            <div class="card-body">
-                                <h3 class="card-title">Flexbox</h3>
-                                <p class="card-text">Flexbox is now the default, and Bootstrap 4 supports SASS out of the box.</p>
-                                <a href="#" class="btn btn-outline-secondary">Outline</a>
-                            </div>
-                        </div>
+                      
                     </div>
                     <div class="col-lg-9 col-md-8">
                         
@@ -290,7 +280,7 @@
                       <div class="col-sm">
                         <input type="text" name="STikername" class="form-control" placeholder="Tiker name">
                         <h3>Amount of Stocks</h3>
-                        <input type="number" name="SAmount" class="form-control" placeholder="Dollars">
+                        <input type="number" name="SAmount" class="form-control" placeholder="Value">
                         
                       <div class="col-sm">
                         <h3>Date from</h3>
@@ -322,7 +312,18 @@
                             <div class="card-body">
                                 <h4 class="card-title">Resaults</h4>
                                 
-                                <p>Profit over time:</p>
+                  <p>Uloženo $:</p>
+                  <h5>{{SDionice["open"][0] * SAmount}}</h5>
+                  <p>Konacna cijena dionice:</p>
+                  {%if profit < SDionice["open"][0] * SAmount %}
+                  <h5 style=" color: red;">{{profit}}$</h5>
+                  <p>gubitak: {{SDionice["open"][0] * SAmount - profit}}$</p>
+                        {%else%}
+                  <h5 >{{profit}}$</h5>
+                  <h5 style="color: green;">profit: {{profit- SDionice["open"][0] * SAmount }}$</h5>
+                  
+                  {%endif%}
+
                   <p>Pocetna Vrijednost:</p>
                   
                   <h5>{{SDionice["open"][0]}}</h5>
@@ -334,12 +335,7 @@
                   <h5>{{days}} Days</h5>
                   <p>Povrat za vrijeme držanja (PoVD)</p>
                   <h5>{{PoVD}}%</h5>
-                  <p>Profit:</p>
-                  {%if profit < SDionice["open"][0] %}
-                  <h5 style=" color: red;">{{profit}}$</h5>
-                        {%else%}
-                  <h5 style="color: green;">{{profit}}$</h5>
-                  {%endif%}
+                 
                   
            
                   <a id="more"></a>
@@ -417,13 +413,13 @@
 
   <table class="table table-bordered table-striped mb-0">
       <tr style="text-align: center;">
-          <th>Datum</th>
+          
 
-          <th>Open</th>
-          <th>Low</th>
-          <th>High</th>
-          <th>AdjClose</th>
-          <th>Volume</th>
+          <th>index</th>
+          <th>tiker 1</th>
+          <th>tiker 2</th>
+          <th>correlation</th>
+          <th>Cluster</th>
       </tr>
    
   </table>

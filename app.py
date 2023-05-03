@@ -105,7 +105,7 @@ def correlation(start_date,end_date_str,symbols_list):
     # Get the upper triangle values and reshape them into a 2D array with a single column
     KMPodaci = corrMatrica[rowIndeks, kolIndeks].reshape(-1, 1)
 
-    print(KMPodaci)
+   
 
     kMeans = KMeans(n_clusters=5, init='k-means++', n_init=10)
     kMeans.fit(KMPodaci)
@@ -260,6 +260,7 @@ def main ():
     PoVD = ""
     Sdatumi =[]
     SDionice=[]
+    SAmount = 0
 
         #default variables
     datumi =[]
@@ -327,7 +328,7 @@ def main ():
             SDateFrom = request.form['SDateFrom'] 
             SDateTo = request.form['SDateTo'] 
             days = days_between_dates(SDateFrom,SDateTo)
-            
+            print(SAmount)
             AP ,PoVD, profit = Simulation(UserStartDate= SDateFrom,UserEndDate= SDateTo,amount= SAmount, tikerName=Stikername)
             SDionice = findData(tiker=Stikername, startDate=SDateFrom, end_date=SDateTo, Interval="1d")
             for x in SDionice["open"].index.values:
@@ -340,7 +341,7 @@ def main ():
             tikerOd = request.form['tikerOd'] 
             tikeri = tikeri.split(" ")
             kmeans = correlation(tikerOd,tikerDo,tikeri)
-            print(kmeans)
+           
         
 
 
@@ -372,7 +373,7 @@ def main ():
         errormsg = "error occured"
         
         # correlation done
-    print(np.corrcoef(dionice1,dionice2))
+    
    
     # getting linear agression
     x,y = LinearnaAgregacija(data)
@@ -385,7 +386,7 @@ def main ():
     poly2 = Polynomial_Regression(dionice2)
 
     
-    return render_template ('index.html',datumi=datumi, datumiLen = len(datumi),dionice=dionice,dioniceLen=len(dionice),data=data,imedionice = tiker,x=x,y=y,linearLen=len(x),dionice2=dionice2, tiker2= tiker2, tiker1 = tiker1, errormsg = errormsg ,dionice1 = dionice1, poly1 = poly1,poly2 = poly2, AP = round(AP*100,2),PoVD=PoVD,days=days,Sdatumi = Sdatumi,SDionice = SDionice,SdatumiLen = len(Sdatumi),SDioniceLen = len(SDionice),profit = profit,tikerOd = tikerOd,kmeans = kmeans, kmeansLen = len(kmeans))
+    return render_template ('index.html',datumi=datumi, datumiLen = len(datumi),dionice=dionice,dioniceLen=len(dionice),data=data,imedionice = tiker,x=x,y=y,linearLen=len(x),dionice2=dionice2, tiker2= tiker2, tiker1 = tiker1, errormsg = errormsg ,dionice1 = dionice1, poly1 = poly1,poly2 = poly2, AP = round(AP*100,2),PoVD=PoVD,days=days,Sdatumi = Sdatumi,SDionice = SDionice,SdatumiLen = len(Sdatumi),SDioniceLen = len(SDionice),profit = profit,tikerOd = tikerOd,kmeans = kmeans, kmeansLen = len(kmeans),SAmount = int(SAmount))
 
 
 
@@ -404,6 +405,13 @@ def test ():
  
     #plot_regression_line(dionice,datumi, b)
     return str(45*3)
+
+
+
+@app.errorhandler(404)
+def not_found(e):
+   
+    return '<h1 style = "font-size: 200px;margin-left: 50%; margin-right: 50%;">404</h1> how did you get here??'
 
 
 
