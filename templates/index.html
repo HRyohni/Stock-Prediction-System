@@ -27,11 +27,8 @@
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             
+              </li>
 
-
-             
-
-           
 
       
             </ul>
@@ -49,7 +46,7 @@
 
       <nav class="navbar fixed-bottom bg-body-tertiary">
         <div class="container-fluid">
-          <a class="navbar-brand" href="#">Created in education purpuse</a>
+          <a class="navbar-brand" href="#">Created by love ♥</a>
         </div>
       </nav>
 
@@ -74,7 +71,7 @@
                     {%endif%}
                   </div>
 
-
+                 
                     <hr>
 
                 <!--toggle sidebar button
@@ -146,28 +143,18 @@
     
                 <a id="features"></a>
                 <hr>
-                <p class="lead mt-5">
-                    Are you ready for Bootstap 4? It's the 4th generation of this popular responsive framework. Bootstrap 4 will include some interesting 
-                    new features such as flexbox, 5 grid sizes (now including xl), cards, `em` sizing, CSS normalization (reboot) and larger font
-                    sizes.
-                </p>
+              
                 <div class="row my-4">
                     <div class="col-lg-3 col-md-4">
                         <div class="card">
-                            <img class="card-img-top img-fluid" src="//placehold.it/740x180/bbb/fff?text=..." alt="Card image cap">
+                            
                             <div class="card-body">
-                                <h4 class="card-title">Layouts</h4>
-                                <p class="card-text">Flexbox provides simpler, more flexible layout options like vertical centering.</p>
-                                <a href="#" class="btn btn-primary">Button</a>
+                                <h4 class="card-title">{{imedionice}}</h4>
+                                <p class="card-text">Statistics about your tiker input:</p>
+                                
                             </div>
                         </div>
-                        <div class="card card-inverse bg-inverse mt-3">
-                            <div class="card-body">
-                                <h3 class="card-title">Flexbox</h3>
-                                <p class="card-text">Flexbox is now the default, and Bootstrap 4 supports SASS out of the box.</p>
-                                <a href="#" class="btn btn-outline-secondary">Outline</a>
-                            </div>
-                        </div>
+                      
                     </div>
                     <div class="col-lg-9 col-md-8">
                         
@@ -258,7 +245,8 @@
                         </div>
                       
                     </div>
-                  
+                    </div>
+                
                         </div>
                         <form method="POST" style="width: 500px;">
 
@@ -279,15 +267,193 @@
                           {% if errormsg != "error occured"%}
                         <canvas style="width: 100px;"  id="compare"></canvas>
                         {%endif%}
-                    </div>
-                    
-                </div>
+
                 <!--/row-->
-    
-                <a id="more"></a>
+
+                  <hr>
+                <h1 style="text-align: center;">Simulation</h1>
+                <form method="POST" class="d-flex" role="Scalculate" >
+                  <div class="container" style="width: 50%;">
+                    <div class="row">
+                      <h1>Tiker name</h1>            
+                      
+                      <div class="col-sm">
+                        <input type="text" name="STikername" class="form-control" placeholder="Tiker name">
+                        <h3>Amount of Stocks</h3>
+                        <input type="number" name="SAmount" class="form-control" placeholder="Value">
+                        
+                      <div class="col-sm">
+                        <h3>Date from</h3>
+                        <input type="date" name="SDateFrom" id="date-input" class="form-control" placeholder="Date">
+                      </div>
+                        <h3>Date To</h3>
+                        <input type="date" id="date-input" name="SDateTo" class="form-control" placeholder="Date">
+                        <br>
+                        <button style="width: 100px; margin-left: 100%;" type="submit" class="btn btn-light">Buy</button>
+                        
+                       
+                      </div>
+                      
+                    </div>
+                  </div>
+                </form>
+               
+                
                 <hr>
+                {%if SDionice[0] != []%}
+                <div class="container" style="width: 90%;">
+                  
+                  {%if SDioniceLen > 0%}
+                  <hr>
+                  <div class="row my-4">
+                    <div class="col-lg-3 col-md-4">
+                        <div class="card">
+                            <img class="card-img-top img-fluid" src="//placehold.it/740x180/bbb/fff?text=..." alt="Card image cap">
+                            <div class="card-body">
+                                <h4 class="card-title">Resaults</h4>
+                                
+                  <p>Uloženo $:</p>
+                  <h5>{{SDionice["open"][0] * SAmount}}</h5>
+                  <p>Konacna cijena dionice:</p>
+                  {%if profit < SDionice["open"][0] * SAmount %}
+                  <h5 style=" color: red;">{{profit}}$</h5>
+                  <p>gubitak: {{SDionice["open"][0] * SAmount - profit}}$</p>
+                        {%else%}
+                  <h5 >{{profit}}$</h5>
+                  <h5 style="color: green;">profit: {{profit- SDionice["open"][0] * SAmount }}$</h5>
+                  
+                  {%endif%}
+
+                  <p>Pocetna Vrijednost:</p>
+                  
+                  <h5>{{SDionice["open"][0]}}</h5>
+                  <p>Konačna Vrijednost:</p>
+                  <h5>{{SDionice["open"][SDioniceLen-1]}}</h5>
+                  <p>Anualizirani povrat:</p>
+                  <h5>{{AP}}%</h5>
+                  <p>days ago:</p>
+                  <h5>{{days}} Days</h5>
+                  <p>Povrat za vrijeme držanja (PoVD)</p>
+                  <h5>{{PoVD}}%</h5>
+                 
+                  
+           
+                  <a id="more"></a>
+                                <a href="#" class="btn btn-primary">Button</a>
+                            </div>
+                        </div>
+                        <div class="card card-inverse bg-inverse mt-3">
+                            <div class="card-body">
+                                <h3 class="card-title">Flexbox</h3>
+                                <p class="card-text">Flexbox is now the default, and Bootstrap 4 supports SASS out of the box.</p>
+                                <a href="#" class="btn btn-outline-secondary">Outline</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-9 col-md-8">
+                        
+
+                        <thead class="thead-inverse">
+
+
+                        </thead>
+                        <div class="table-responsive">
+                            <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                                
+                              <canvas   id="SmyChart"></canvas>
+                            
+                        </div>
+                      
+                    </div>
+                  </div>
+                  
+                </div>
+
+                
+               
                 
     </div>
+    {%endif%}
+    {%endif%}
+    
+<div style="text-align: center;">
+
+<h1>Correlation</h1>
+
+
+
+
+<form method="POST">
+  
+  <div class="form-group">
+    <h3>Date From</h3>
+        <input type="date" name="tikerOd" id="date-input" class="form-control" placeholder="Date">
+    <h3>Date To</h3>
+        <input type="date" name="tikerDo" id="date-input" class="form-control" placeholder="Date">
+    <label style="padding: 20px;" for="exampleFormControlTextarea1">Write tiker names</label>
+    <textarea name="tikeri" class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+  </div>
+
+  <button style="margin: 50px;" type="submit" class="btn btn-light">Calculate</button>
+  
+  
+
+
+  
+</form>
+
+
+{%if tikerOd != ""%}
+<img style="background-color: aliceblue; margin: 50px;"  src="/static/img/correlation.png" class="img-thumbnail" >
+<img style="background-color: aliceblue; margin: 50px;"  src="/static/img/kmeans.png" class="img-thumbnail" >
+{%endif%}
+
+<thead class="thead-inverse">
+                                    
+
+  <table class="table table-bordered table-striped mb-0">
+      <tr style="text-align: center;">
+          
+
+          <th>index</th>
+          <th>tiker 1</th>
+          <th>tiker 2</th>
+          <th>correlation</th>
+          <th>Cluster</th>
+      </tr>
+   
+  </table>
+
+
+</thead>
+<div class="table-responsive">
+  <div class="table-wrapper-scroll-y my-custom-scrollbar">
+<table class="table table-bordered table-striped mb-0">
+<tbody>
+                             
+  <div  class="overflow-auto">
+   
+{%for x in range(kmeansLen)%}
+<tr style="text-align: center; margin: 50px;"> 
+    <td>{{x}}</td>
+    
+    <td style="color: white;">{{ kmeans["Prvi Tiker"][x] }} </td>
+
+    <td style="color: white;">{{kmeans["Drugi Tiker"][x]}} </td>
+  
+
+    <td style="color: white;">{{kmeans["Korelacija"][x]}} </td>
+
+    <td style="color: white;">{{kmeans["Klasa"][x]}} </td>
+</tr>
+{%endfor%}
+</div>
+</tbody>
+</table>
+  </div>
+</div>
+</div>
+    
     <script src="js/bootstrap.js"></script>
 
     <script src="js/jquery.js"></script>        
@@ -365,6 +531,43 @@
     });
 
 
+    const Sctx = document.getElementById('SmyChart');
+
+new Chart(Sctx, 
+{
+  type: 'line',
+  data: {
+    labels: [ 
+        
+    {% for x in range(SdatumiLen) %}
+        '{{Sdatumi[x]}}',
+    {% endfor %}
+],
+datasets: [{
+
+type: 'line',
+label: 'dionica',
+data: [
+{%for x in range(SDioniceLen)%}
+    
+    '{{SDionice["open"][x]}}',
+
+{% endfor %}
+],
+borderColor: 'rgb(255, 99, 132)',
+backgroundColor: 'rgba(255, 99, 132, 0.2)'
+}]
+  },
+
+  options: {
+    scales: {
+      y: {
+        beginAtZero: true
+      }
+    }
+  }
+});
+
 
 const ctx1 = document.getElementById('compare');
 
@@ -407,7 +610,48 @@ data: [
 ],
 fill: false,
 borderColor: 'rgb(54, 162, 235)'
-}]
+},
+
+
+{
+
+
+type: 'line',
+
+label: 'poly1',
+data: [
+{%for i in range(dioniceLen)%}
+    
+'{{poly1[i]}}',
+    
+
+{% endfor %}
+],
+fill: false,
+borderColor: 'rgba(255, 99, 160, 0.2)'
+},
+
+{
+
+
+type: 'line',
+
+label: 'poly2',
+data: [
+{%for i in range(dioniceLen)%}
+    
+'{{poly2[i]}}',
+    
+
+{% endfor %}
+],
+fill: false,
+borderColor: 'rgb(88, 177, 237)'
+}
+
+
+
+]
   },
 
   options: {
@@ -416,6 +660,21 @@ borderColor: 'rgb(54, 162, 235)'
         beginAtZero: true
       }
     }
+  }
+});
+
+
+
+const dateInput = document.getElementById('date-input');
+
+dateInput.addEventListener('input', function(event) {
+  const selectedDate = new Date(event.target.value);
+  const dayOfWeek = selectedDate.getDay();
+  
+  if (dayOfWeek === 5 || dayOfWeek === 6 || dayOfWeek === 0) {
+    event.target.setCustomValidity('Please select a date between Monday and Thursday.');
+  } else {
+    event.target.setCustomValidity('');
   }
 });
 
